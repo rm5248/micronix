@@ -1,0 +1,6 @@
+# All platforms listed in alphabetic order
+
+platforms += pic32
+
+# include the platform specific files
+#include $(patsubst %, $(srctree)/arch/mips/%/Platform, $(platforms))

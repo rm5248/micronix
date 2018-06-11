@@ -1,0 +1,9 @@
+config MIPS
+	bool
+	default y
+
+config 32BIT
+        bool "32-bit kernel"
+        help
+          Select this option if you want to build a 32-bit kernel.
+
