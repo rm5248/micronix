@@ -1,0 +1,23 @@
+if ARCH_PIC32MX
+
+choice
+	prompt "PIC32MX type"
+
+config ARCH_PIC32MX795F512L
+	bool "PIC32MX795F512L"
+
+endchoice 
+
+# --------------------------------------------
+
+choice 
+	prompt "PIC32MX775F512L Board Type"
+
+config MACH_MAX32
+	bool "MAX32"
+	help
+	  Select this if you are using Digilents MAX32
+
+endchoice
+
+endif

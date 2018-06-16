@@ -62,8 +62,8 @@ cflags-y += $(call cc-option, -mno-check-zero-division)
 
 ifdef CONFIG_32BIT
 #ROBERT configure this based on compiler
-#ld-emul			= $(32bit-emul)
-ld-emul			= elf32pic32mx
+ld-emul			= $(32bit-emul)
+#ld-emul			= elf32pic32mx
 vmlinux-32		= vmlinux
 vmlinux-64		= vmlinux.64
 
@@ -81,6 +81,14 @@ endif
 all-$(CONFIG_BOOT_ELF32)	:= $(vmlinux-32)
 all-$(CONFIG_BOOT_ELF64)	:= $(vmlinux-64)
 all-$(CONFIG_SYS_SUPPORTS_ZBOOT)+= vmlinuz
+
+# Machine directory name.  This list is sorted alphanumerically 
+# by CONFIG_* macro name
+machine-$(CONFIG_ARCH_PIC32MX)  := pic32mx
+
+machdirs := $(patsubst %,arch/mips/mach-%/,$(machine-y))
+
+core-y                          += $(machdirs)
 
 #
 # GCC uses -G 0 -mabicalls -fpic as default.  We don't want PIC in the kernel
@@ -307,7 +315,8 @@ KBUILD_CFLAGS += -fno-asynchronous-unwind-tables
 LDFLAGS			+= -m $(ld-emul)
 
 #ROBERT configure linker script based on processor
-LDFLAGS += -T arch/mips/p32MX795F512L.ld
+#LDFLAGS += -T arch/mips/p32MX795F512L.ld
+LDFLAGS += -T arch/mips/script.ld
 
 ifdef CONFIG_MIPS
 CHECKFLAGS += $(shell $(CC) $(KBUILD_CFLAGS) -dM -E -x c /dev/null | \

@@ -7,3 +7,9 @@ config 32BIT
         help
           Select this option if you want to build a 32-bit kernel.
 
+config ARCH_PIC32MX
+	bool "PIC32 MX architecture"
+	help
+          Select this option if this is for a PIC32MX
+
+source "arch/mips/mach-pic32mx/Kconfig"
