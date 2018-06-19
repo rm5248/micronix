@@ -1,11 +1,8 @@
 /*
  * Linker script for PIC32 firmware.
  */
-/*
 OUTPUT_FORMAT("elf32-tradlittlemips", "elf32-bigmips",
 	      "elf32-littlemips")
-	      */
-OUTPUT_FORMAT("elf32-big")
 OUTPUT_ARCH(mips)
 ENTRY(_reset)
 MEMORY
@@ -13,6 +10,9 @@ MEMORY
   ram                  (rw!x): ORIGIN = 0x80000000, LENGTH = 26K
   u0area               (rw!x): ORIGIN = 0x80006800, LENGTH = 3K
   uarea                (rw!x): ORIGIN = 0x80007400, LENGTH = 3K
+  /* I do not know where the value for devcfg comes from, but it seems to be an
+   * absolute memory address
+   */
   devcfg               (r)   : ORIGIN = 0x9fc02ff0, LENGTH = 16
 
   /* Required by Microchip C32 linker */
@@ -68,6 +68,7 @@ SECTIONS
   .rel.plt        : { *(.rel.plt) }
   .rela.plt       : { *(.rela.plt) }
   .plt            : { *(.plt) }
+.module.init : { *(.module.init) }
 
   .boot           :
   {

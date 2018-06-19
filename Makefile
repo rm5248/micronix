@@ -281,6 +281,8 @@ else
 scripts/Kbuild.include: ;
 include scripts/Kbuild.include
 
+include scripts/Makefile.hex
+
 # Read KERNELRELEASE from include/config/kernel.release (if it exists)
 KERNELRELEASE = $(shell cat include/config/kernel.release 2> /dev/null)
 KERNELVERSION = $(VERSION)$(if $(PATCHLEVEL),.$(PATCHLEVEL)$(if $(SUBLEVEL),.$(SUBLEVEL)))$(EXTRAVERSION)
@@ -404,6 +406,7 @@ USERINCLUDE    := \
 		-I$(srctree)/include/uapi \
 		-I$(objtree)/include/generated/uapi \
                 -include $(srctree)/include/linux/kconfig.h
+
 
 # Use LINUXINCLUDE when you must reference the include/ directory.
 # Needed to be compatible with the O= option
@@ -577,7 +580,7 @@ export KBUILD_MODULES KBUILD_BUILTIN
 ifeq ($(KBUILD_EXTMOD),)
 # Objects we will link into vmlinux / subdirs we need to visit
 #init-y		:= init/
-#drivers-y	:= drivers/ sound/ firmware/
+drivers-y	:= drivers/
 #net-y		:= net/
 #libs-y		:= lib/
 #core-y		:= usr/

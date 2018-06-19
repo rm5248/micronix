@@ -1,13 +1,21 @@
 #ifndef PIC_CONFIG_H
 #define PIC_CONFIG_H
 
+#include <micro-os/compiler_types.h>
+
 /*--------------------------------------
  * Configuration registers.
  */
+/*
 #define DEVCFG0         *(volatile unsigned*)0x9fc02ffc
 #define DEVCFG1         *(volatile unsigned*)0x9fc02ff8
 #define DEVCFG2         *(volatile unsigned*)0x9fc02ff4
 #define DEVCFG3         *(volatile unsigned*)0x9fc02ff0
+*/
+#define DEVCFG0         *(volatile unsigned*)0xBFC02FFC
+#define DEVCFG1         *(volatile unsigned*)0xBFC02FF8
+#define DEVCFG2         *(volatile unsigned*)0xBFC02FF4
+#define DEVCFG3         *(volatile unsigned*)0xBFC02FF0
 
 #define PIC32_DEVCFG(cfg0, cfg1, cfg2, cfg3) \
     asm (".section .config"); \
@@ -144,5 +152,8 @@
 #define DEVCFG3_FCANIO          0x04000000 /* CAN pins default */
 #define DEVCFG3_FUSBIDIO        0x40000000 /* USBID pin: controlled by USB */
 #define DEVCFG3_FVBUSONIO       0x80000000 /* VBuson pin: controlled by USB */
+
+uint32_t pic32_get_sysclk_mhz(void);
+uint32_t pic32_get_peripheralbus_mhz(void);
 
 #endif

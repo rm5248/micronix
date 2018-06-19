@@ -523,8 +523,8 @@ $$(target): $(generic_config_dir)/$(endian).config
 )))
 endef
 
-$(eval $(call gen_generic_defconfigs,32 64,r1 r2 r6,eb el))
-$(eval $(call gen_generic_defconfigs,micro32,r2,eb el))
+#$(eval $(call gen_generic_defconfigs,32 64,r1 r2 r6,eb el))
+#$(eval $(call gen_generic_defconfigs,micro32,r2,eb el))
 
 define describe_generic_defconfig
 $(subst 32r,MIPS32 r,$(subst 64r,MIPS64 r,$(subst el, little endian,$(patsubst %_defconfig,%,$(1)))))

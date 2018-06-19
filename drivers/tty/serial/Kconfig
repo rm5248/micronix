@@ -1,0 +1,4 @@
+config PIC32_SERIAL
+	bool "PIC32 Serial Port"
+	help 
+	  This enables the PIC32 serial port

@@ -16,9 +16,8 @@
 	.ent _reset
 	.globl _reset
 _reset:
-	#la $sp,u_end - 16 # start of RAM(note:configure this via linker script)
-	la $sp,0x80007400 - 16 # start of RAM(note:configure this via linker script)
-	la $a0,main
+	la $sp,u_end - 16 # start of RAM(note:u_end configured via linker script)
+	la $a0,kern_init       # Get the adress of the kern_init method
 	jalr $a0
 	lui $gp,0x8000 # ????
 

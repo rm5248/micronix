@@ -20,16 +20,22 @@
 
 /* micro-os entry point */
 void main(){
-	int counter = 0;
+    int counter = 0;
+    int on = 0;
 
-	PORTA = 0;
+    TRISA = ~(0x01 << 3);
+    PORTA = 0;
 
-	while( 1 ){
-		counter++;
-		if( counter % 1000000 == 0 ){
-			PORTA = (0x01 << 3);
-		}else{
-			PORTA = 0;
-		}
-	}
+    while( 1 ){
+            counter++;
+            if( counter % 100000 == 0 ){
+                on = !on;
+            }
+            
+            if( on ){
+                    LATA = (0x01 << 3);
+            }else{
+                    LATA = ~(0x01 << 3);
+            }
+    }
 }
