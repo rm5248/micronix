@@ -12,6 +12,10 @@ MEMORY
   uarea                (rw!x): ORIGIN = 0x80007400, LENGTH = 3K
   /* I do not know where the value for devcfg comes from, but it seems to be an
    * absolute memory address
+   * NOTE: This works because when creating the hex file, we subtract 0x8000000
+   * from the addresses, which causes this to be 0x1FC002FF0, which seems to be
+   * the physical location in memory where the config bits are set.  Not sure
+   * why Microchip's ldscript has something different, maybe custom code?
    */
   devcfg               (r)   : ORIGIN = 0x9fc02ff0, LENGTH = 16
 
