@@ -1,7 +1,7 @@
 #include <asm/io.h>
-#include <micro-os/module.h>
-#include <micro-os/pic32-serial.h>
-#include <micro-os/uart.h>
+#include <micronix/module.h>
+#include <micronix/pic32-serial.h>
+#include <micronix/uart.h>
 
 #define MODE_REGISTER 0x0
 #define STA_REGISTER  0x10

@@ -1,5 +1,5 @@
-#include <micro-os/uart.h>
-#include <micro-os/string.h>
+#include <micronix/uart.h>
+#include <micronix/string.h>
 
 static struct console *primary_console;
 

@@ -1,6 +1,6 @@
-#include <micro-os/kern_init.h>
-#include <micro-os/init.h>
-#include <micro-os/uart.h>
+#include <micronix/kern_init.h>
+#include <micronix/init.h>
+#include <micronix/uart.h>
 
 void main(void);
 

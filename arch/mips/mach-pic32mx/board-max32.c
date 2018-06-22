@@ -1,8 +1,8 @@
 #include "pic_config.h"
 
-#include <micro-os/pic32-serial.h>
-#include <micro-os/init.h>
-#include <micro-os/uart.h>
+#include <micronix/pic32-serial.h>
+#include <micronix/init.h>
+#include <micronix/uart.h>
 
 PIC32_DEVCFG (
 DEVCFG0_DEBUG_DISABLED,     /* ICE debugger enabled */

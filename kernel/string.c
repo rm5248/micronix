@@ -1,4 +1,4 @@
-#include <micro-os/string.h>
+#include <micronix/string.h>
 
 int kstrlen(const char* string){
     int len = 0;

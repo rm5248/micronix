@@ -1,7 +1,7 @@
 #ifndef PIC32_SERIAL_H
 #define PIC32_SERIAL_H
 
-#include <micro-os/compiler_types.h>
+#include <micronix/compiler_types.h>
 
 #define UART1_BASE_ADDRESS 0xBF806000
 #define UART2_BASE_ADDRESS 0xBF806800

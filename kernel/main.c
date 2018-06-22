@@ -1,4 +1,4 @@
-#include <micro-os/main.h>
+#include <micronix/main.h>
 
 #define PIC32_R(a)              *(volatile unsigned*)(0xBF800000 + (a))
 #define TRISA           PIC32_R (0x86000) /* Port A: mask of inputs */
@@ -18,7 +18,6 @@
 #define ODCASET         PIC32_R (0x86038)
 #define ODCAINV         PIC32_R (0x8603C)
 
-/* micro-os entry point */
 void main(){
     int counter = 0;
     int on = 0;

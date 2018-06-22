@@ -1,6 +1,6 @@
-#include <micro-os/printk.h>
-#include <micro-os/console.h>
-#include <micro-os/uart.h>
+#include <micronix/printk.h>
+#include <micronix/console.h>
+#include <micronix/uart.h>
 
 void __printk(const char* message){
     console_write(message);

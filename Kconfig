@@ -3,7 +3,7 @@
 # For a description of the syntax of this configuration file,
 # see Documentation/kbuild/kconfig-language.txt.
 #
-mainmenu "micro-os/$(ARCH) $(KERNELVERSION) Kernel Configuration"
+mainmenu "Micronix/$(ARCH) $(KERNELVERSION) Kernel Configuration"
 
 comment "Compiler: $(CC_VERSION_TEXT)"
 
