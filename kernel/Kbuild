@@ -1,1 +1,1 @@
-obj-y += main.o kern_init.o printk.o string.o console.o
+obj-y += main.o kern_init.o printk.o string.o console.o klist.o panic.o process.o stack.o

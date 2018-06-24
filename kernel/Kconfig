@@ -1,0 +1,34 @@
+config STATIC_KLIST
+    bool "Static KList"
+    help
+      Select this option to use a static number of klist nodes
+      This means that no dynamic memory allocation is needed
+
+config KLIST_NODES
+    int  "Number of KList nodes"
+    default 200
+    depends on STATIC_KLIST
+    help
+      The number of klist nodes to allocate on the system.
+      Fewer nodes results in less memory, but a correspodingly
+      less capable system
+
+config STATIC_PROCESS_LIST
+    bool "Static process list"
+    help
+      Select this option to use a static number of processes
+      This means that no dynamic memory allocation is needed
+
+config MAX_STATIC_PROCESSES
+    int  "Maximum number of processes"
+    default 10
+    depends on STATIC_PROCESS_LIST
+    help
+      The maximum number of processes that can be running at once
+
+config STACK_SIZE
+    int "Stack size"
+    default 1024
+    depends on STATIC_PROCESS_LIST
+    help
+      The size of a stack for a process.

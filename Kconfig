@@ -12,3 +12,7 @@ source "scripts/Kconfig.include"
 source "arch/$(SRCARCH)/Kconfig"
 
 source "drivers/Kconfig"
+
+menu "Kernel options"
+source "kernel/Kconfig"
+endmenu

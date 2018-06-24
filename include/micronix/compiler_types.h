@@ -8,6 +8,8 @@ typedef short int16_t;
 typedef unsigned int uint32_t;
 typedef int int32_t;
 
+#define NULL ((void*)0)
+
 #define __iomem
 
 #endif

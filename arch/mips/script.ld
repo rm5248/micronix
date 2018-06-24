@@ -21,7 +21,7 @@ MEMORY
 
   /* Required by Microchip C32 linker */
   kseg0_program_mem    (rx)  : ORIGIN = 0x9D000000, LENGTH = 512K
-  exception_mem        (rx)  : ORIGIN = 0x9D000000, LENGTH = 0x1000
+  exception_mem        (rx)  : ORIGIN = 0x9FC01000, LENGTH = 0x1000
   kseg0_boot_mem       (rx)  : ORIGIN = 0x9FC00000, LENGTH = 12K-16
   kseg1_boot_mem       (rx)  : ORIGIN = 0xBFC00000, LENGTH = 0x490
   kseg1_data_mem       (w!x) : ORIGIN = 0xA0000000, LENGTH = 0x20000
