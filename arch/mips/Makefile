@@ -87,6 +87,13 @@ all-$(CONFIG_SYS_SUPPORTS_ZBOOT)+= vmlinuz
 machine-$(CONFIG_ARCH_PIC32MX)  := pic32mx
 
 machdirs := $(patsubst %,arch/mips/mach-%/,$(machine-y))
+platdirs := $(patsubst %,arch/arm/plat-%/,$(plat-y))
+
+ifeq ($(KBUILD_SRC),)
+KBUILD_CPPFLAGS += $(patsubst %,-I%include,$(machdirs) $(platdirs))
+else
+KBUILD_CPPFLAGS += $(patsubst %,-I$(srctree)/%include,$(machdirs) $(platdirs))
+endif
 
 core-y                          += $(machdirs)
 
