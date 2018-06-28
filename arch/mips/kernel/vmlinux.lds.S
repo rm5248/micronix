@@ -5,6 +5,16 @@ OUTPUT_FORMAT("elf32-tradlittlemips", "elf32-bigmips",
 	      "elf32-littlemips")
 OUTPUT_ARCH(mips)
 ENTRY(_reset)
+
+/*
+ * Base address for interrupt handlers
+ */
+PROVIDE(exception_base_address = 0x9FC01000);
+/*
+ * How big each vector is
+ */
+PROVIDE(vector_size = 0x40);
+
 MEMORY
 {
   ram                  (rw!x): ORIGIN = 0x80000000, LENGTH = 26K
@@ -187,4 +197,12 @@ SECTIONS
   .debug_funcnames 0 : { *(.debug_funcnames) }
   .debug_typenames 0 : { *(.debug_typenames) }
   .debug_varnames  0 : { *(.debug_varnames) }
+
+  /* interrupt handlers */
+#define ISR_VECTOR(isr_num) ._isr_##isr_num exception_base_address + 0x200 + ((vector_size << 5) * ##isr_num) : \
+  { \
+     KEEP(*(._isr_##isr_num)) \
+  } > exception_mem
+
+  ISR_VECTOR(0)
 }

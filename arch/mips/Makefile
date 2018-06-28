@@ -323,7 +323,7 @@ LDFLAGS			+= -m $(ld-emul)
 
 #ROBERT configure linker script based on processor
 #LDFLAGS += -T arch/mips/p32MX795F512L.ld
-LDFLAGS += -T arch/mips/script.ld
+#LDFLAGS += -T arch/mips/script.ld
 
 ifdef CONFIG_MIPS
 CHECKFLAGS += $(shell $(CC) $(KBUILD_CFLAGS) -dM -E -x c /dev/null | \
