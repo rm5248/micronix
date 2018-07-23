@@ -5,8 +5,10 @@
 #include <micronix/panic.h>
 #include <micronix/process.h>
 #include <micronix/stack.h>
+#include <micronix/interrupts.h>
 
 void main(void);
+void led_init(void);
 
 void kern_init(){
     board_console_init();
@@ -17,6 +19,9 @@ void kern_init(){
     klist_init();
     process_init();
     stack_init();
+    interrupts_init();
+    //coretimer_init();
+led_init();
 
     /* Now that our internal data structures 
      * have been setup, call the general board 

@@ -55,10 +55,10 @@ isr_save:
 # 
 # Core Timer interrupt - pass cause and EPC, function returns EPC to resume at
 #
-ISR_START(0)
-  mfc0    $a0,$CP0_CAUSE; 
-  mfc0    $a1,$CP0_EPC; 
-  jal     coretimer_int
-  nop
-  mtc0    $v1,$CP0_EPC
-  eret
+#ISR_START(0)
+#  mfc0    $a0,$CP0_CAUSE; 
+#  mfc0    $a1,$CP0_EPC; 
+#  jal     coretimer_int
+#  nop
+#  mtc0    $v1,$CP0_EPC
+#  eret
