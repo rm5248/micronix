@@ -20,6 +20,7 @@
 #define CP0_STATUS_BEV (0x01 << 22) /* Bootstrap exception vector control bit */
 #define CP0_STATUS_EXL (0x01 << 1) /* Exception level bit */
 #define CP0_STATUS_ERL (0x01 << 2) /* Error level bit */
+#define CP0_STATUS_CU0 (0x01 << 28) /* Allow access to coprocessor 0 from userspace */
 #define CP0_CAUSE_IV (0x01 << 23) /* Interrupt vector bit */
 
 #endif

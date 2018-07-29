@@ -10,7 +10,7 @@
 
 #define ISR_START(vector) \
   .globl _isr_##vector; \
-  .section ._isr_##vector; \
+  .section ._isr,"ax"; \
   .type _isr_##vector, @function; \
 _isr_##vector: \
   rdpgpr  $sp,$sp;
@@ -52,13 +52,30 @@ isr_save:
   nop
 
 
+               .section .exception,"ax",@progbits
+_exception_base_: .globl _exception_base_
+
+                .org    0x180
+                .type   _exception_vector_, @function
+  .section ._exception_vector,"ax"; \
+_exception_vector_: .globl _exception_vector_
+
+                j       _isr
+                nop
+
+
 # 
 # Core Timer interrupt - pass cause and EPC, function returns EPC to resume at
 #
-#ISR_START(0)
-#  mfc0    $a0,$CP0_CAUSE; 
-#  mfc0    $a1,$CP0_EPC; 
-#  jal     coretimer_int
-#  nop
-#  mtc0    $v1,$CP0_EPC
-#  eret
+  .globl _isr;
+  .section ._isr,"ax";
+  .type _isr, @function;
+  .org 0x200
+_isr: 
+  #rdpgpr  $sp,$sp;
+  #mfc0    $a0,$CP0_CAUSE; 
+  #mfc0    $a1,$CP0_EPC; 
+  jal     exception
+  nop
+  #mtc0    $v1,$CP0_EPC
+  eret
