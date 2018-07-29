@@ -10,12 +10,12 @@ typedef int (*exitcall_t)(void);
  * then the rest of the kernel will startup, followed by
  * the normal board init
  */
-void board_console_init(void);
+//void board_console_init(void);
 
 /**
  * Initialize the board.  Internal kernel data structures have been
  * initalized by this point
  */
-void board_init(void);
+//void board_init(void);
 
 #endif

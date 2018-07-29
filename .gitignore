@@ -86,3 +86,4 @@ GTAGS
 \#*#
 
 *.hex
+arch/*/kernel/vmlinux.lds

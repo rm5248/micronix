@@ -1,17 +1,24 @@
 config MIPS
 	bool
-	default y
 
 config 32BIT
-        bool "32-bit kernel"
-        help
-          Select this option if you want to build a 32-bit kernel.
+        bool
+
+config CPU_MIPS32_R2
+        bool
+
+config MAX_IRQS
+        int 
+        default 75 if ARCH_PIC32MX
 
 config ARCH_PIC32MX
 	bool "PIC32 MX architecture"
 	help
           Select this option if this is for a PIC32MX
 	select CPU_LITTLE_ENDIAN
+        select CPU_MIPS32_R2
+        select 32BIT
+        select MIPS
 
 config CPU_LITTLE_ENDIAN
 	bool "Little Endian CPU"

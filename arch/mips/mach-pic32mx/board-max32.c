@@ -1,8 +1,9 @@
 #include "pic_config.h"
 
 #include <micronix/pic32-serial.h>
-#include <micronix/init.h>
+#include <pic32-coretimer.h>
 #include <micronix/uart.h>
+#include <micronix/board.h>
 
 PIC32_DEVCFG (
 DEVCFG0_DEBUG_DISABLED,     /* ICE debugger enabled */
@@ -27,7 +28,7 @@ DEVCFG3_FSRSSEL_7 |         /* Assign irq priority 7 to shadow set */
 DEVCFG3_FETHIO);            /* Default Ethernet i/o pins */
 
 static struct pic32_uart_data uart1 = {
-    //.base_address = UART1_BASE_ADDRESS
+    .base_address = UART1_BASE_ADDRESS
 };
 
 static struct console max32_console = {
@@ -38,6 +39,7 @@ static struct console max32_console = {
 
 //TODO calulate thse values by reading DEVCFG, hardcode for now 
 //to make sure we get good values
+/*
 uint32_t pic32_get_sysclk_mhz(){
     return 80000000;
 }
@@ -45,16 +47,13 @@ uint32_t pic32_get_sysclk_mhz(){
 uint32_t pic32_get_peripheralbus_mhz(){
     return pic32_get_sysclk_mhz() / 4;
 }
+*/
 
-void board_console_init(){
-    uart1.base_address = UART1_BASE_ADDRESS;
-    max32_console.write = pic32_console_write;
-    max32_console.data = &uart1;
-
+void board_earlyconsole_init(){
     pic32_init_serial( &uart1 );
     console_set( &max32_console );
 }
 
 void board_init(){
-//	jklsadf
+    pic32_coretimer_init();
 }

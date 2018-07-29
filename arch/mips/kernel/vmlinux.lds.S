@@ -9,7 +9,8 @@ ENTRY(_reset)
 /*
  * Base address for interrupt handlers
  */
-PROVIDE(exception_base_address = 0x9FC01000);
+//PROVIDE(exception_base_address = 0x9FC01000);
+PROVIDE(exception_base_address = 0x9D000000);
 /*
  * How big each vector is
  */
@@ -30,8 +31,8 @@ MEMORY
   devcfg               (r)   : ORIGIN = 0x9fc02ff0, LENGTH = 16
 
   /* Required by Microchip C32 linker */
-  kseg0_program_mem    (rx)  : ORIGIN = 0x9D000000, LENGTH = 512K
-  exception_mem        (rx)  : ORIGIN = 0x9FC01000, LENGTH = 0x1000
+  kseg0_program_mem    (rx)  : ORIGIN = 0x9D001000, LENGTH = 512K
+  exception_mem        (rx)  : ORIGIN = 0x9D000000, LENGTH = 0x1000
   kseg0_boot_mem       (rx)  : ORIGIN = 0x9FC00000, LENGTH = 12K-16
   kseg1_boot_mem       (rx)  : ORIGIN = 0xBFC00000, LENGTH = 0x490
   kseg1_data_mem       (w!x) : ORIGIN = 0xA0000000, LENGTH = 0x20000
@@ -93,7 +94,7 @@ SECTIONS
   .text           :
   {
     /* Exception handlers. */
-    *(.exception)
+    //*(.exception)
     *(.text .stub .text.* .gnu.linkonce.t.*)
     /* .gnu.warning sections are handled specially by elf32.em.  */
     *(.gnu.warning)
@@ -202,7 +203,22 @@ SECTIONS
 #define ISR_VECTOR(isr_num) ._isr_##isr_num exception_base_address + 0x200 + ((vector_size << 5) * ##isr_num) : \
   { \
      KEEP(*(._isr_##isr_num)) \
+    . = ALIGN (32 / 8); \
   } > exception_mem
 
-  ISR_VECTOR(0)
+  ._exception :
+  {
+    KEEP(*(.exception))
+  } > exception_mem
+
+  /* We only have one interrupt handler */
+  ._isr exception_base_address + 0x200 :
+  {
+    KEEP(*(._isr))
+  } > exception_mem
+
+  ._exception_vector exception_base_address + 0x180 :
+  {
+    KEEP(*(._exception_vector))
+  } > exception_mem
 }

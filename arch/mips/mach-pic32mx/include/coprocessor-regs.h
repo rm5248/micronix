@@ -23,4 +23,25 @@
 #define CP0_STATUS_CU0 (0x01 << 28) /* Allow access to coprocessor 0 from userspace */
 #define CP0_CAUSE_IV (0x01 << 23) /* Interrupt vector bit */
 
+/*
+ * Read C0 coprocessor register.
+ */
+#define mips_read_c0_register(reg,sel) \
+    ({  int __value; \
+        asm volatile ( \
+        "mfc0   %0, $%1, %2" \
+        : "=r" (__value) : "K" (reg), "K" (sel)); \
+        __value; \
+    })
+
+/*
+ * Write C0 coprocessor register.
+ */
+#define mips_write_c0_register(reg, sel, value) \
+    do { \
+        asm volatile ( \
+        "mtc0   %z0, $%1, %2 \n ehb" \
+        : : "r" ((unsigned int) (value)), "K" (reg), "K" (sel)); \
+    } while (0)
+
 #endif
