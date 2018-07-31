@@ -153,7 +153,7 @@
 #define DEVCFG3_FUSBIDIO        0x40000000 /* USBID pin: controlled by USB */
 #define DEVCFG3_FVBUSONIO       0x80000000 /* VBuson pin: controlled by USB */
 
-uint32_t pic32_get_sysclk_mhz(void);
-uint32_t pic32_get_peripheralbus_mhz(void);
+uint32_t pic32_get_sysclk_hz(void);
+uint32_t pic32_get_peripheralbus_hz(void);
 
 #endif

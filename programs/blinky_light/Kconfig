@@ -1,0 +1,6 @@
+config BLINKY_LIGHT
+    bool "Blink a light"
+
+config BLINKY_LIGHT_PIN
+    int "Pin connected to LED to blink light"
+    depends on BLINKY_LIGHT

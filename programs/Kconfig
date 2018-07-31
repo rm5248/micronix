@@ -1,0 +1,14 @@
+config ENABLE_BUILTIN_PROGRAMS
+    bool "Enable built-in programs"
+    ---help---
+      Select this option to enable built-in programs.
+
+if ENABLE_BUILTIN_PROGRAMS
+
+menu "Built-in programs"
+
+source "programs/blinky_light/Kconfig"
+
+endmenu
+
+endif

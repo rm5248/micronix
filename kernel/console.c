@@ -1,7 +1,7 @@
 #include <micronix/uart.h>
 #include <micronix/string.h>
 
-static struct console *primary_console;
+static struct console *primary_console = NULL;
 
 void console_set(struct console *console){
     primary_console = console;

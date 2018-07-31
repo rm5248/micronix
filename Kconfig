@@ -16,3 +16,5 @@ source "drivers/Kconfig"
 menu "Kernel options"
 source "kernel/Kconfig"
 endmenu
+
+source "programs/Kconfig"

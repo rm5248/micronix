@@ -2,8 +2,10 @@
 
 #include <micronix/pic32-serial.h>
 #include <pic32-coretimer.h>
+#include <pic32-regs.h>
 #include <micronix/uart.h>
 #include <micronix/board.h>
+#include <micronix/process.h>
 
 PIC32_DEVCFG (
 DEVCFG0_DEBUG_DISABLED,     /* ICE debugger enabled */
@@ -37,17 +39,9 @@ static struct console max32_console = {
     .data = &uart1
 };
 
-//TODO calulate thse values by reading DEVCFG, hardcode for now 
-//to make sure we get good values
-/*
-uint32_t pic32_get_sysclk_mhz(){
-    return 80000000;
+static int max32_init_process(void){
+    /* TODO write code */
 }
-
-uint32_t pic32_get_peripheralbus_mhz(){
-    return pic32_get_sysclk_mhz() / 4;
-}
-*/
 
 void board_earlyconsole_init(){
     pic32_init_serial( &uart1 );
@@ -56,4 +50,6 @@ void board_earlyconsole_init(){
 
 void board_init(){
     pic32_coretimer_init();
+
+    process_create_first( max32_init_process );
 }

@@ -1,8 +1,7 @@
 #include <micronix/processor_init.h>
 #include <pic_config.h>
+#include <pic32-clocks.h>
 #include <asm/io.h>
-
-#define OSCCON 0xBF80F000
 
 void processor_clocks_init(){
   /* No need to configure anything, set by configuration bits */
@@ -23,11 +22,28 @@ void processor_ram_init(){
     }
 }
 
-uint32_t pic32_get_sysclk_mhz(){
-    return 80000000;
+uint32_t pic32_get_sysclk_hz(){
+    /* Microchip documentation:
+     * SYSCLK = (8MHz Crystal/ FPLLIDIV * FPLLMUL / FPLLODIV)
+     *
+     * FPLLODIV and FPLLMUL can be read from OSCCON,
+     * FPLLIDIV must be read from config bits
+     */
+    uint32_t osccon = readl(OSCCON);
+    int pllodiv = (osccon >> 27) & 0x07; /* FPLLODIV config */
+    int pllmult = (osccon >> 16) & 0x07; /* FPLLMUL config */
+    int pllidiv = DEVCFG1 & DEVCFG2_FPLLIDIV_MASK;
+                 /* OSC on Max32 = 8 mHz */
+    uint32_t hz = 8000 / pllidiv * pllmult / pllodiv;
+
+    /* TODO this needs to actually calculate the speed
+     * if you are on the internal oscillator
+     */
+
+    return hz;
 }
 
-uint32_t pic32_get_peripheralbus_mhz(){
+uint32_t pic32_get_peripheralbus_hz(){
     int divisor;
     int pbdiv = readl( OSCCON );
     pbdiv = pbdiv >> 19;
@@ -40,5 +56,5 @@ uint32_t pic32_get_peripheralbus_mhz(){
     case 3: divisor = 8; break;
     }
 
-    return pic32_get_sysclk_mhz() / divisor;
+    return pic32_get_sysclk_hz() / divisor;
 }
