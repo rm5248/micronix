@@ -6,6 +6,7 @@
 #include <micronix/uart.h>
 #include <micronix/board.h>
 #include <micronix/process.h>
+#include <micronix/syscalls.h>
 
 PIC32_DEVCFG (
 DEVCFG0_DEBUG_DISABLED,     /* ICE debugger enabled */
@@ -39,8 +40,57 @@ static struct console max32_console = {
     .data = &uart1
 };
 
+static int process_change_a3(void){
+    int on = 0;
+
+    TRISA = ~(0x01 << 3);
+    PORTA = 0;
+
+    while( 1 ){
+        if( on ){
+            LATA = (0x01 << 3);
+        }else{
+            LATA = ~(0x01 << 3);
+        }
+
+        //sys_usleep( 1000 * 250 );
+    }
+
+    return 0;
+}
+
+static int process_change_c1(void){
+    int on = 0;
+
+    TRISC = ~(0x01 << 0);
+    PORTC = 0;
+
+    while( 1 ){
+        if( on ){
+            LATC = (0x01 << 1);
+        }else{
+            LATC = ~(0x01 << 1);
+        }
+    }
+
+    return 0;
+}
+
+/* CHIPKIT has RC1 and RA3 as LEDs */
 static int max32_init_process(void){
-    /* TODO write code */
+    /* This is a (very simple) vesion of /sbin/init */
+
+/*
+    switch( sys_fork() ){
+    }
+*/
+
+process_change_a3();
+
+    while( 1 ){
+    }
+
+    return 0;
 }
 
 void board_earlyconsole_init(){

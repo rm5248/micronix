@@ -14,7 +14,6 @@ static struct process_context all_context[ CONFIG_MAX_STATIC_PROCESSES ];
 #endif
 
 static struct KList pcb_avail;
-static struct pcb* currently_executing;
 pid_t next_pid;
 static struct KList sleeping_processes;
 static struct KList reading_processes;
@@ -139,6 +138,11 @@ int process_create_first(int (*main_function)(void) ){
     pcb->status = 0;
     pcb->sleeptime = 0;
     pcb->state = PROCESS_STATE_READY;
+
+    retval = scheduler_schedule( pcb );
+    if( retval ){
+        goto out;
+    }
 
     retval = pcb->pid;
 

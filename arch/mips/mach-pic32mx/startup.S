@@ -24,11 +24,6 @@ _reset:
 
 
 
-
-
-
-
-
 ##########################RETROBSD
 /*
                .section .exception,"ax",@progbits

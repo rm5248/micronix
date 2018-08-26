@@ -8,6 +8,7 @@
 #include <micronix/interrupts.h>
 #include <micronix/processor_init.h>
 #include <micronix/board.h>
+#include <micronix/schedule.h>
 
 void main(void);
 void led_init(void);
@@ -23,21 +24,24 @@ void kern_init(){
     /* Other kernel initialization */
     klist_init();
     process_init();
+    scheduler_init();
     stack_init();
     interrupts_init();
     processor_interrupts_init();
-led_init();
+//led_init();
 
     /* Now that our internal data structures 
      * have been setup, call the general board 
      * initialization routine 
      */
     board_init();
+
+    scheduler_dispatch();
 console_write( "Done all init!\n" );
 asm volatile("ei");
 asm volatile("ehb");
 //main();
 //wait forever
-volatile int a = 5;
-while( a );
+//volatile int a = 5;
+//while( a );
 }
