@@ -505,6 +505,11 @@ export RETPOLINE_CFLAGS
 KBUILD_CFLAGS	+= $(call cc-option,-fno-PIE)
 KBUILD_AFLAGS	+= $(call cc-option,-fno-PIE)
 
+# Make C less dangerous
+KBUILD_CFLAGS	+= $(call cc-option,-Wvla)
+KBUILD_CFLAGS	+= $(call cc-option,-Wimplicit-fallthrough)
+KBUILD_CFLAGS	+= $(call cc-option,-Wswitch-unreachable)
+
 # check for 'asm goto'
 #ifeq ($(shell $(CONFIG_SHELL) $(srctree)/scripts/gcc-goto.sh $(CC) $(KBUILD_CFLAGS)), y)
 #  CC_HAVE_ASM_GOTO := 1
