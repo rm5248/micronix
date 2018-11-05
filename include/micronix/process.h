@@ -59,6 +59,6 @@ int pcb_alloc(struct pcb**);
  */
 int process_create_first(int (*main_function)(void) );
 
-//int process_context_
+/*int process_context_*/
 
 #endif

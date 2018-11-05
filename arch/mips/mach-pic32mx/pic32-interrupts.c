@@ -5,6 +5,8 @@
 #include <micronix/processor_init.h>
 #include <asm/io.h>
 #include <pic32-regs.h>
+#include <mach-context.h>
+#include <micronix/schedule.h>
 
 void change_led(void);
 
@@ -143,7 +145,7 @@ main();
 /*
  * Called from the exception and interrupt vector
  */
-void exception(void){
+void exception( struct pcb* context ){
     /*
      * We need to convert the vector number into an irq number
      * before we can pass it on to the kernel to handle
@@ -151,6 +153,12 @@ void exception(void){
     int irq_number = 0;
     uint32_t ifs;
     uint32_t bit_pos;
+
+/* need to check cause register first, see waht kind of error this is.
+ * if interrupt, call interrupt_handle
+ * if address/bus/reserved instruction error, signal the current process
+ * if syscall, call correct syscall(syscall_handle?)
+ */
 
     /*console_write("GOT INTERRUPT\r\n");*/
 

@@ -3,6 +3,7 @@
 #
 
 #include <coprocessor-regs.h>
+#include <mach-context.h>
 
 .text
 
@@ -46,12 +47,8 @@ _isr_##vector: \
   eret; 
 
 #
-# Save the ISR state
 #
-isr_save:
-  nop
-
-
+#
                .section .exception,"ax",@progbits
 _exception_base_: .globl _exception_base_
 
@@ -65,17 +62,69 @@ _exception_vector_: .globl _exception_vector_
 
 
 # 
-# Core Timer interrupt - pass cause and EPC, function returns EPC to resume at
+# Generic interrupt handler - pass cause and EPC, function returns EPC to resume at
 #
   .globl _isr;
   .section ._isr,"ax";
   .type _isr, @function;
   .org 0x200
 _isr: 
-  #rdpgpr  $sp,$sp;
-  #mfc0    $a0,$CP0_CAUSE; 
-  #mfc0    $a1,$CP0_EPC; 
+  move $k0, $sp  # Save the original stack pointer
+  addi $sp, -16-PROCESS_CONTEXT_WORDS*4          # Allocate space for registers
+
+  .set noat
+  # Save all of our registers
+  # ($sp) means treat register data as a memory address
+  sw      $at, (16+0*4) ($sp)
+  sw      $v0, (16+1*4) ($sp)
+  sw      $v1, (16+2*4) ($sp)
+  sw      $a0, (16+3*4) ($sp)
+  sw      $a1, (16+4*4) ($sp)
+  sw      $a2, (16+5*4) ($sp)
+  sw      $a3, (16+6*4) ($sp)
+  sw      $t0, (16+7*4) ($sp)
+  sw      $t1, (16+8*4) ($sp)
+  sw      $t2, (16+9*4) ($sp)
+  sw      $t3, (16+10*4) ($sp)
+  sw      $t4, (16+11*4) ($sp)
+  sw      $t5, (16+12*4) ($sp)
+  sw      $t6, (16+13*4) ($sp)
+  sw      $t7, (16+14*4) ($sp)
+  sw      $s0, (16+15*4) ($sp)
+  sw      $s1, (16+16*4) ($sp)
+  sw      $s2, (16+17*4) ($sp)
+  sw      $s3, (16+18*4) ($sp)
+  sw      $s4, (16+19*4) ($sp)
+  sw      $s5, (16+20*4) ($sp)
+  sw      $s6, (16+21*4) ($sp)
+  sw      $s7, (16+22*4) ($sp)
+  sw      $t8, (16+23*4) ($sp)
+  sw      $t9, (16+24*4) ($sp)
+  sw      $gp, (16+25*4) ($sp)
+  sw      $k0, (16+26*4) ($sp) # original sp is in k0
+  sw      $fp, (16+27*4) ($sp)
+  sw      $ra, (16+28*4) ($sp)
+  .set at
+
+  mfhi    $k0                             # Save special registers
+  sw      $k0, (16+29*4) ($sp)
+
+  mflo    $k0
+  sw      $k0, (16+30*4) ($sp)
+
+  mfc0    $k0, $CP0_STATUS
+  sw      $k0, (16+31*4) ($sp)
+
+  mfc0    $k0, $CP0_EPC
+  sw      $k0, (16+32*4) ($sp)
+
+  # Pass the process context to the exception handler
+  move $a0, $sp
+  addi $a0, -16
+
   jal     exception
   nop
-  #mtc0    $v1,$CP0_EPC
+
+restore_context:
+
   eret

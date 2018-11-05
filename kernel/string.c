@@ -22,3 +22,12 @@ void* kmemset(void* ptr, int value, uint32_t num){
 
 void _printk(const char* format, ... ){
 }
+
+void* kmemcpy(void* dest, const void* src, uint32_t len){
+    uint8_t* dest_data = dest;
+    uint8_t* src_data = src;
+
+    while( len-- ){
+        *dest_data++ = *src_data++;
+    }
+}

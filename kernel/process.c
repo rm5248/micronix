@@ -6,6 +6,7 @@
 #include <micronix/panic.h>
 #include <mach-context.h>
 #include <micronix/stack.h>
+#include <micronix/schedule.h>
 
 #ifdef CONFIG_STATIC_PROCESS_LIST
 static struct pcb all_pcbs[ CONFIG_MAX_STATIC_PROCESSES ];

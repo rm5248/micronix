@@ -18,6 +18,11 @@ void* kmemset(void* ptr, int value, uint32_t num);
  */
 void _printk(const char* format, ... );
 
+/**
+ * Copy a block of memory
+ */
+void* kmemcpy(void* dest, const void* src, uint32_t len);
+
 #ifndef CONFIG_DISABLE_PRINTK
 #define printk(format,...)
 #else

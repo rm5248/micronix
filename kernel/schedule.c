@@ -1,6 +1,9 @@
 #include <micronix/schedule.h>
 #include <micronix/klist.h>
 #include <micronix/panic.h>
+#include <micronix/process.h>
+#include <micronix/string.h>
+#include <mach-context.h>
 
 static struct KList ready_processes;
 static struct pcb* currently_executing;
@@ -40,4 +43,8 @@ int scheduler_dispatch(){
     ret = klist_pop_front( &ready_processes, (void**)&currently_executing );
 
     return ret;
+}
+
+void scheduler_update_current_context( struct process_context* context ){
+    kmemcpy( currently_executing->context, context, sizeof( struct process_context ) );
 }

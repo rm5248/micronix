@@ -1,15 +1,22 @@
 #ifndef MACH_CONTEXT_H
 #define MACH_CONTEXT_H
 
+#define PROCESS_CONTEXT_WORDS 33
+
+#ifndef __ASSEMBLER__
+
 /*
  * Contains the context of the executing process - 
  * this means all of the registers
  */
 struct process_context{
     uint32_t at;
+    uint32_t v0;
+    uint32_t v1;
     uint32_t a0;
     uint32_t a1;
     uint32_t a2;
+    uint32_t a3;
     uint32_t t0;
     uint32_t t1;
     uint32_t t2;
@@ -32,6 +39,14 @@ struct process_context{
     uint32_t sp;
     uint32_t fp;
     uint32_t ra;
+    uint32_t lo;
+    uint32_t hi;
+    uint32_t status;
+    uint32_t pc;
 };
+
+_Static_assert( sizeof( struct process_context ) / 4 == PROCESS_CONTEXT_WORDS, "Process context is not expected size" );
+
+#endif /* __ASSEMBLER__ */
 
 #endif
