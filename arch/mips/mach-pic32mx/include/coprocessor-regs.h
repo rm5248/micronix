@@ -21,7 +21,22 @@
 #define CP0_STATUS_EXL (0x01 << 1) /* Exception level bit */
 #define CP0_STATUS_ERL (0x01 << 2) /* Error level bit */
 #define CP0_STATUS_CU0 (0x01 << 28) /* Allow access to coprocessor 0 from userspace */
+
 #define CP0_CAUSE_IV (0x01 << 23) /* Interrupt vector bit */
+
+/* Bits for the CP0 cause register */
+#define CP0_CAUSE_MASK (0x0F << 2)
+#define CP0_CAUSE_EXCODE_INT 0 /* interrupt */
+#define CP0_CAUSE_EXCODE_ADEDL (0x04 << 2) /* Address error exception(load or instruction fetch) */
+#define CP0_CAUSE_EXCODE_ADES  (0x05 << 2) /* Address error exception(store) */
+#define CP0_CAUSE_EXCODE_IBE   (0x06 << 2) /* Bus error exception(instruction fetch) */
+#define CP0_CAUSE_EXCODE_DBE   (0x07 << 2) /* Bus error exception(data reference: load or store) */
+#define CP0_CAUSE_EXCODE_SYS   (0x08 << 2) /* Syscall exception */
+#define CP0_CAUSE_EXCODE_BP    (0x09 << 2) /* Breakpoint exception */
+#define CP0_CAUSE_EXCODE_RI    (0x0A << 2) /* Reserved instruction exception */
+#define CP0_CAUSE_EXCODE_CPU   (0x0B << 2) /* Coprocessor unusable exception */
+#define CP0_CAUSE_EXCODE_OV    (0x0C << 2) /* Arithmetic overflow exception */
+#define CP0_CAUSE_EXCODE_TR    (0x0D << 2) /* Trap exception */
 
 /*
  * Read C0 coprocessor register.

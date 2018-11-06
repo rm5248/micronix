@@ -7,6 +7,9 @@
 #include <pic32-regs.h>
 #include <mach-context.h>
 #include <micronix/schedule.h>
+#include <micronix/panic.h>
+#include <micronix/syscall.h>
+#include <micronix/process.h>
 
 void change_led(void);
 
@@ -142,10 +145,7 @@ main();
   return EPC;
 }
 
-/*
- * Called from the exception and interrupt vector
- */
-void exception( struct pcb* context ){
+static void handle_irq(void){
     /*
      * We need to convert the vector number into an irq number
      * before we can pass it on to the kernel to handle
@@ -153,12 +153,6 @@ void exception( struct pcb* context ){
     int irq_number = 0;
     uint32_t ifs;
     uint32_t bit_pos;
-
-/* need to check cause register first, see waht kind of error this is.
- * if interrupt, call interrupt_handle
- * if address/bus/reserved instruction error, signal the current process
- * if syscall, call correct syscall(syscall_handle?)
- */
 
     /*console_write("GOT INTERRUPT\r\n");*/
 
@@ -191,4 +185,62 @@ void exception( struct pcb* context ){
 
 kernel_handle:
     interrupt_handle(irq_number);
+}
+
+static void handle_syscall( struct process_context* context ){
+    int32_t syscall_number = context->a0;
+    syscall_fn syscall;
+
+    if( syscall_number < 0 || syscall_number > NUM_SYSCALLS ){
+        /* bad syscall: force sys_exit */
+    }
+
+    syscall = syscalls[ syscall_number ];
+
+    syscall( context );
+}
+
+/*
+ * Called from the exception and interrupt vector
+ *
+ * Returns the context to restore to
+ */
+struct process_context* exception( const struct process_context* context ){
+    uint32_t cause;
+    struct process_context* current_context;
+
+    cause = mips_read_c0_register( CP0_CAUSE, 0 );
+
+    /*
+     * First update the context for our current process, so that we can
+     * modifiy it appropriately(e.g. by a syscall)
+     */
+    scheduler_update_current_context(context);
+    current_context = scheduler_current_process()->context;
+
+    /* need to check cause register first, see waht kind of error this is.
+     * if interrupt, call interrupt_handle
+     * if address/bus/reserved instruction error, signal the current process
+     * if syscall, call correct syscall(syscall_handle?)
+     */
+
+    switch( cause & CP0_CAUSE_MASK ){
+    case CP0_CAUSE_EXCODE_INT: 
+        handle_irq();
+        break;
+    case CP0_CAUSE_EXCODE_SYS:
+        handle_syscall( current_context );
+        break;
+    default:
+        panic( "No handling for this exception\n" );
+    }
+
+
+    /*
+     * The current process may have been changed,
+     * so grab it to be safe.
+     */
+    current_context = scheduler_current_process()->context;
+
+    return current_context;
 }

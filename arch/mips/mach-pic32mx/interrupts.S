@@ -118,13 +118,64 @@ _isr:
   mfc0    $k0, $CP0_EPC
   sw      $k0, (16+32*4) ($sp)
 
-  # Pass the process context to the exception handler
+  # Pass a pointer to the process context to the exception handler.
+  # The exception handler must not modify this as it is on the
+  # stack
   move $a0, $sp
   addi $a0, -16
 
   jal     exception
   nop
 
+# Restore the context as passed back from our exception handler.
+# note that V0 will have this address, so we must store it in
+# K0 briefly
 restore_context:
+  move $k0, $v0
+  .set noat
+  lw      $at, (16+0*4) ($k0)
+  lw      $v0, (16+1*4) ($k0)
+  lw      $v1, (16+2*4) ($k0)
+  lw      $a0, (16+3*4) ($k0)
+  lw      $a1, (16+4*4) ($k0)
+  lw      $a2, (16+5*4) ($k0)
+  lw      $a3, (16+6*4) ($k0)
+  lw      $t0, (16+7*4) ($k0)
+  lw      $t1, (16+8*4) ($k0)
+  lw      $t2, (16+9*4) ($k0)
+  lw      $t3, (16+10*4) ($k0)
+  lw      $t4, (16+11*4) ($k0)
+  lw      $t5, (16+12*4) ($k0)
+  lw      $t6, (16+13*4) ($k0)
+  lw      $t7, (16+14*4) ($k0)
+  lw      $s0, (16+15*4) ($k0)
+  lw      $s1, (16+16*4) ($k0)
+  lw      $s2, (16+17*4) ($k0)
+  lw      $s3, (16+18*4) ($k0)
+  lw      $s4, (16+19*4) ($k0)
+  lw      $s5, (16+20*4) ($k0)
+  lw      $s6, (16+21*4) ($k0)
+  lw      $s7, (16+22*4) ($k0)
+  lw      $t8, (16+23*4) ($k0)
+  lw      $t9, (16+24*4) ($k0)
+  lw      $gp, (16+25*4) ($k0)
+  lw      $sp, (16+26*4) ($k0)
+  lw      $fp, (16+27*4) ($k0)
+  lw      $ra, (16+28*4) ($k0)
+  .set at
 
+  # restore special registers
+  lw      $k0, (16+29*4) ($k0)
+  mthi    $k0
+
+  lw      $k0, (16+30*4) ($k0)
+  mtlo    $k0
+
+  lw      $k0, (16+31*4) ($k0)
+  mtc0    $k0, $CP0_STATUS
+
+  lw      $k0, (16+32*4) ($k0)
+  mtc0    $k0, $CP0_EPC
+
+  # Finally, return from our exception
   eret

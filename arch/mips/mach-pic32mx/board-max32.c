@@ -6,7 +6,6 @@
 #include <micronix/uart.h>
 #include <micronix/board.h>
 #include <micronix/process.h>
-#include <micronix/syscalls.h>
 
 PIC32_DEVCFG (
 DEVCFG0_DEBUG_DISABLED,     /* ICE debugger enabled */

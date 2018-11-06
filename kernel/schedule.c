@@ -45,6 +45,10 @@ int scheduler_dispatch(){
     return ret;
 }
 
-void scheduler_update_current_context( struct process_context* context ){
+void scheduler_update_current_context(const struct process_context* context){
     kmemcpy( currently_executing->context, context, sizeof( struct process_context ) );
+}
+
+struct pcb* scheduler_current_process(){
+    return currently_executing;
 }

@@ -19,6 +19,11 @@ int scheduler_dispatch(void);
 /*
  * Update the context for the currently running context.
  */
-void scheduler_update_current_context( struct process_context* );
+void scheduler_update_current_context(const struct process_context*);
+
+/*
+ * Get the current running process
+ */
+struct pcb* scheduler_current_process(void);
 
 #endif

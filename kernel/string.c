@@ -30,4 +30,6 @@ void* kmemcpy(void* dest, const void* src, uint32_t len){
     while( len-- ){
         *dest_data++ = *src_data++;
     }
+
+    return dest;
 }
