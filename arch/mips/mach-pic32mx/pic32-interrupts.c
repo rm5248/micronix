@@ -188,7 +188,7 @@ kernel_handle:
 }
 
 static void handle_syscall( struct process_context* context ){
-    int32_t syscall_number = context->a0;
+    int32_t syscall_number = PROCESS_CONTEXT_SYSCALL_NUMBER( context );
     syscall_fn syscall;
 
     if( syscall_number < 0 || syscall_number > NUM_SYSCALLS ){
@@ -232,6 +232,9 @@ struct process_context* exception( const struct process_context* context ){
         handle_syscall( current_context );
         break;
     default:
+        console_write( "exception: 0x" );
+        console_printhex( (cause & CP0_CAUSE_MASK) >> 2 );
+        console_write( "\r\n" );
         panic( "No handling for this exception\n" );
     }
 

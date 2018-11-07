@@ -129,7 +129,10 @@ _isr:
 
 # Restore the context as passed back from our exception handler.
 # note that V0 will have this address, so we must store it in
-# K0 briefly
+# K0 briefly.
+# Note: global function to call from startup.S
+.globl restore_context;
+.type restore_context, @function;
 restore_context:
   move $k0, $v0
   .set noat
@@ -164,18 +167,21 @@ restore_context:
   lw      $ra, (16+28*4) ($k0)
   .set at
 
-  # restore special registers
-  lw      $k0, (16+29*4) ($k0)
-  mthi    $k0
-
-  lw      $k0, (16+30*4) ($k0)
-  mtlo    $k0
-
+  # Restore our status register
   lw      $k0, (16+31*4) ($k0)
   mtc0    $k0, $CP0_STATUS
 
+  # restore hi register for overflow
+  lw      $k0, (16+29*4) ($k0)
+  mthi    $k0
+
+  # Restore the program counter
   lw      $k0, (16+32*4) ($k0)
   mtc0    $k0, $CP0_EPC
+
+  # Restore low register for overflow
+  lw      $k0, (16+30*4) ($k0)
+  mtlo    $k0
 
   # Finally, return from our exception
   eret

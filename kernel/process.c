@@ -7,6 +7,10 @@
 #include <mach-context.h>
 #include <micronix/stack.h>
 #include <micronix/schedule.h>
+#include <micronix/uart.h>
+#include <micronix/process-context.h>
+
+#include <coprocessor-regs.h>
 
 #ifdef CONFIG_STATIC_PROCESS_LIST
 static struct pcb all_pcbs[ CONFIG_MAX_STATIC_PROCESSES ];
@@ -30,9 +34,9 @@ static void process_context_init(void){
 
 #ifdef CONFIG_STATIC_PROCESS_LIST
     key.ui = 0;
+    kmemset( all_context, 0, sizeof(all_context) );
     for( x = 0; x < CONFIG_MAX_STATIC_PROCESSES; x++ ){
         klist_append( &context_avail, key, &all_context[ x ] );
-        kmemset( &all_context[ x ], 0, sizeof(struct process_context) );
     }
 #endif
 }
@@ -40,8 +44,7 @@ static void process_context_init(void){
 static int process_context_allocate(struct process_context** context){
     int retval;
 
-    if( context == NULL ||
-        *context == NULL ){
+    if( context == NULL ){
         retval = -EINVAL;
         goto out;
     }
@@ -83,10 +86,12 @@ void process_init(){
     process_context_init();
 
 #ifdef CONFIG_STATIC_PROCESS_LIST
+    kmemset( all_pcbs, 0, sizeof( all_pcbs ) );
     for( x = 0; x < CONFIG_MAX_STATIC_PROCESSES; x++ ){
-        if( pcb_free( &all_pcbs[ x ] ) < 0 ){
-            panic( "unable to init pcb" );
-        }
+        union KListKey key;
+        key.ui = 0;
+
+        klist_append( &pcb_avail, key, &all_pcbs[ x ] );
     }
 #endif
 }
@@ -104,12 +109,13 @@ int pcb_free(struct pcb* tofree){
 
     kmemset( tofree, 0, sizeof( struct pcb ) );
 
-    return ret + klist_append( &pcb_avail, key, NULL );
+    return ret + klist_append( &pcb_avail, key, tofree );
 }
 
 int pcb_alloc(struct pcb** pcb){
     int ret;
-    if( !klist_empty( pcb_avail ) ){
+
+    if( klist_empty( pcb_avail ) ){
         return -ENOMEM;
     }
 
@@ -139,6 +145,10 @@ int process_create_first(int (*main_function)(void) ){
     pcb->status = 0;
     pcb->sleeptime = 0;
     pcb->state = PROCESS_STATE_READY;
+
+    process_context_set_pc( pcb->context, (int)main_function );
+//TODO this needs to be generic to be able to port
+pcb->context->status = mips_read_c0_register( CP0_STATUS, 0 );
 
     retval = scheduler_schedule( pcb );
     if( retval ){

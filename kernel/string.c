@@ -27,6 +27,8 @@ void* kmemcpy(void* dest, const void* src, uint32_t len){
     uint8_t* dest_data = dest;
     uint8_t* src_data = src;
 
+    /* TODO this will be much faster if we can do aligned memory access */
+
     while( len-- ){
         *dest_data++ = *src_data++;
     }

@@ -6,6 +6,7 @@
 #include <micronix/uart.h>
 #include <micronix/board.h>
 #include <micronix/process.h>
+#include <micronix/syscall.h>
 
 PIC32_DEVCFG (
 DEVCFG0_DEBUG_DISABLED,     /* ICE debugger enabled */
@@ -79,6 +80,8 @@ static int process_change_c1(void){
 static int max32_init_process(void){
     /* This is a (very simple) vesion of /sbin/init */
 
+console_write("max32_init_process\r\n");
+test();
 /*
     switch( sys_fork() ){
     }

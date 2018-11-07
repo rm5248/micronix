@@ -5,6 +5,9 @@
 
 #define NUM_SYSCALLS 1
 
+void systemcall(int);
+static long test(void){ systemcall( SYSCALL_TEST ); }
+
 #ifdef __KERNEL__
 struct process_context;
 

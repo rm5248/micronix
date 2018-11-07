@@ -4,6 +4,8 @@
 #include <micronix/process.h>
 #include <micronix/string.h>
 #include <mach-context.h>
+#include <micronix/uart.h>
+#include <micronix/errno.h>
 
 static struct KList ready_processes;
 static struct pcb* currently_executing;
@@ -15,6 +17,10 @@ void scheduler_init(){
 
 int scheduler_schedule( struct pcb* process ){
     union KListKey key;
+
+    if( process == NULL ){
+        return -EINVAL;
+    }
 
     key.i = process->pid;
 

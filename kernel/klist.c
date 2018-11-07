@@ -2,6 +2,7 @@
 #include <micronix/string.h>
 #include <generated/autoconf.h>
 #include <micronix/errno.h>
+#include <micronix/uart.h>
 
 #ifdef CONFIG_STATIC_KLIST
 static struct KListNode nodes[ CONFIG_KLIST_NODES ];
@@ -79,12 +80,19 @@ int klist_append(struct KList* list, union KListKey key, void* data){
     if( tail ){
         tail->next = newnode;
     }
+    if( list->head == NULL ){
+        list->head = newnode;
+        list->tail = newnode;
+    }
+    list->length++;
     
     return 0;
 }
 
 int klist_pop_front(struct KList* list, void** data ){
-    if( list == NULL || *data == NULL ){
+    struct KListNode* head;
+
+    if( list == NULL ){
         return -EINVAL;
     }
 
@@ -92,9 +100,18 @@ int klist_pop_front(struct KList* list, void** data ){
         return -EAGAIN;
     }
 
-    *data = list->head->data;
-    list->head = list->head->next;
-    list->head->prev = NULL;
+    head = list->head;
+    *data = head->data;
+    list->head = head->next;
+    list->length--;
+    if( list->length == 1 ){
+        list->tail = list->head;
+    }else if( list->length == 0 ){
+        list->head = NULL;
+        list->tail = NULL;
+    }else{
+        list->head->prev = NULL;
+    }
 
     return 0;
 }

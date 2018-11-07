@@ -13,7 +13,7 @@
 void main(void);
 void led_init(void);
 
-void kern_init(){
+struct process_context* kern_init(void){
     processor_clocks_init();
     processor_ram_init();
 
@@ -38,8 +38,14 @@ void kern_init(){
 
     scheduler_dispatch();
 console_write( "Done all init!\n" );
-asm volatile("ei");
-asm volatile("ehb");
+
+    /*
+     * All data structures have been initialized: return the
+     * process context to begin execution from
+     */
+    return scheduler_current_process()->context;
+//asm volatile("ei");
+//asm volatile("ehb");
 //main();
 //wait forever
 //volatile int a = 5;

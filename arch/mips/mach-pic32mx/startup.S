@@ -7,6 +7,9 @@
 .extern main
 .extern u_end
 
+.data
+panic_restore_context: .asciiz "Can't restore context"
+
 #
 # Reset vector: The main entry point
 #
@@ -21,6 +24,16 @@ _reset:
 	jalr $a0
 	lui $gp,0x8000 # ????
 
+    # All data structures have now been initialized,
+    # and the kernel should be ready to go.
+    # Pretend that we are returning from an interrupt.
+    j restore_context
+    nop
+
+    # If we get here something has gone horribly wrong
+    la $v0, panic                  # Get the address of the panic function
+    la $a0, panic_restore_context  # String to call panic with
+    j panic                        # PANIC
 
 
 

@@ -5,6 +5,8 @@
 
 #ifndef __ASSEMBLER__
 
+#include <micronix/process-context.h>
+
 /*
  * Contains the context of the executing process - 
  * this means all of the registers
@@ -46,6 +48,28 @@ struct process_context{
 };
 
 _Static_assert( sizeof( struct process_context ) / 4 == PROCESS_CONTEXT_WORDS, "Process context is not expected size" );
+
+/*
+ * Get the argument number from the context.
+ */
+#define PROCESS_CONTEXT_ARG(number,context) ({\
+    int value; \
+    if( number == 0 ) value = context->a0;\
+    if( number == 1 ) value = context->a1;\
+    if( number == 2 ) value = context->a2;\
+    if( number == 3 ) value = context->a3;\
+    value;\
+})
+
+/*
+ * Set the return value for the context
+ */
+#define PROCESS_CONTEXT_RETVAL(value,context) context->v0 = value;
+
+/*
+ * Get the syscall number from the process context
+ */
+#define PROCESS_CONTEXT_SYSCALL_NUMBER(context) context->v0
 
 #endif /* __ASSEMBLER__ */
 
