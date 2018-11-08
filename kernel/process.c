@@ -14,7 +14,6 @@
 
 #ifdef CONFIG_STATIC_PROCESS_LIST
 static struct pcb all_pcbs[ CONFIG_MAX_STATIC_PROCESSES ];
-static struct process_context all_context[ CONFIG_MAX_STATIC_PROCESSES ];
 #else
 #endif
 
@@ -24,53 +23,6 @@ static struct KList sleeping_processes;
 static struct KList reading_processes;
 static struct KList waiting_processes;
 static struct KList zombie_processes;
-static struct KList context_avail;
-
-static void process_context_init(void){
-    int x;
-    union KListKey key;
-
-    klist_reset( &context_avail, NULL, NULL );
-
-#ifdef CONFIG_STATIC_PROCESS_LIST
-    key.ui = 0;
-    kmemset( all_context, 0, sizeof(all_context) );
-    for( x = 0; x < CONFIG_MAX_STATIC_PROCESSES; x++ ){
-        klist_append( &context_avail, key, &all_context[ x ] );
-    }
-#endif
-}
-
-static int process_context_allocate(struct process_context** context){
-    int retval;
-
-    if( context == NULL ){
-        retval = -EINVAL;
-        goto out;
-    }
-
-    retval = klist_pop_front( &context_avail, (void**)context );
-
-out:
-    return retval;
-}
-
-static int process_context_free(struct process_context* context){
-    int retval;
-    union KListKey key;
-
-    if( context == NULL ){
-        retval = -EINVAL;
-        goto out;
-    }
-
-    key.ui = 0;
-    kmemset(context, 0, sizeof(struct process_context) );
-    retval = klist_append( &context_avail, key, context);
-
-out:
-    return retval;
-}
 
 void process_init(){
     int x;
@@ -146,9 +98,9 @@ int process_create_first(int (*main_function)(void) ){
     pcb->sleeptime = 0;
     pcb->state = PROCESS_STATE_READY;
 
+    process_context_allocate( &(pcb->context) );
     process_context_set_pc( pcb->context, (int)main_function );
-//TODO this needs to be generic to be able to port
-pcb->context->status = mips_read_c0_register( CP0_STATUS, 0 );
+    process_context_set_stack( pcb->context, pcb->stack );
 
     retval = scheduler_schedule( pcb );
     if( retval ){

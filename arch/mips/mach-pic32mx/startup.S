@@ -27,6 +27,7 @@ _reset:
     # All data structures have now been initialized,
     # and the kernel should be ready to go.
     # Pretend that we are returning from an interrupt.
+    # v0 should already have the ptr to restore context from.
     j restore_context
     nop
 

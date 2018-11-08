@@ -9,6 +9,7 @@
 #include <micronix/processor_init.h>
 #include <micronix/board.h>
 #include <micronix/schedule.h>
+#include <mach-context.h>
 
 void main(void);
 void led_init(void);
@@ -28,7 +29,6 @@ struct process_context* kern_init(void){
     stack_init();
     interrupts_init();
     processor_interrupts_init();
-//led_init();
 
     /* Now that our internal data structures 
      * have been setup, call the general board 
@@ -37,17 +37,10 @@ struct process_context* kern_init(void){
     board_init();
 
     scheduler_dispatch();
-console_write( "Done all init!\n" );
 
     /*
      * All data structures have been initialized: return the
      * process context to begin execution from
      */
     return scheduler_current_process()->context;
-//asm volatile("ei");
-//asm volatile("ehb");
-//main();
-//wait forever
-//volatile int a = 5;
-//while( a );
 }
