@@ -5,9 +5,6 @@
 #include <coprocessor-regs.h>
 #include <mach-context.h>
 
-.data
-panic_str: .asciiz "here R2"
-
 .text
 
 # Note: ISR code taken from output of GCC attribute((__interrupt__))
@@ -125,7 +122,7 @@ _isr:
   # The exception handler must not modify this as it is on the
   # stack
   move $a0, $sp
-  addi $a0, -16
+  addi $a0, 16
 
   jal     exception
   nop
