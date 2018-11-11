@@ -31,7 +31,8 @@ MEMORY
   devcfg               (r)   : ORIGIN = 0x9fc02ff0, LENGTH = 16
 
   /* Required by Microchip C32 linker */
-  kseg0_program_mem    (rx)  : ORIGIN = 0x9D001000, LENGTH = 512K
+  kseg0_program_mem    (rx)  : ORIGIN = 0x9D001000, LENGTH = 0x80000
+  moduleinfo           (r)   : ORIGIN = 0x9D071000, LENGTH = 0x10000
   exception_mem        (rx)  : ORIGIN = 0x9D000000, LENGTH = 0x1000
   kseg0_boot_mem       (rx)  : ORIGIN = 0x9FC00000, LENGTH = 12K-16
   kseg1_boot_mem       (rx)  : ORIGIN = 0xBFC00000, LENGTH = 0x490
@@ -83,7 +84,6 @@ SECTIONS
   .rel.plt        : { *(.rel.plt) }
   .rela.plt       : { *(.rela.plt) }
   .plt            : { *(.plt) }
-.module.init : { *(.module.init) }
 
   .boot           :
   {
@@ -108,6 +108,14 @@ SECTIONS
     . = ALIGN (32 / 8);
     _etext = .;
   } > kseg0_program_mem
+
+  .module.info :
+  {
+    __module_info_begin = .;
+    KEEP(*(.module.info.*));
+    *(.module.info);
+    __module_info_end = .;
+  } > moduleinfo
 
   /* Start data (internal SRAM).  */
   .data		  : AT (ADDR (.text) + SIZEOF (.text))
@@ -221,4 +229,5 @@ SECTIONS
   {
     KEEP(*(._exception_vector))
   } > exception_mem
+
 }
