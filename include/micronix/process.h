@@ -1,8 +1,8 @@
 #ifndef MICRONIX_PROCESS_H
 #define MICRONIX_PROCESS_H
 
-#include <micronix/compiler_types.h>
 #include <micronix/stack.h>
+#include <stdint.h>
 
 #define INIT_PID 1
 

@@ -6,6 +6,7 @@
 #include <mach-context.h>
 #include <micronix/uart.h>
 #include <micronix/errno.h>
+#include <stddef.h>
 
 static struct KList ready_processes;
 static struct pcb* currently_executing;

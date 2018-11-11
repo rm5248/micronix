@@ -8,19 +8,6 @@ struct uart_ops {
 }
 */
 
-struct console {
-    char    name[16];
-    void    (*write)(struct console *, const char *, unsigned);
-    void*   data;
-};
-
-void console_set(struct console*);
-void console_write(const char* data);
-//void console_printf(const char* format ...);
-
-void console_printint(int value);
-void console_printhex(int value);
-
 //void uart_add_driver();
 
 #endif

@@ -1,6 +1,5 @@
 #include <coprocessor-regs.h>
 #include <micronix/interrupts.h>
-#include <micronix/compiler_types.h>
 #include <micronix/uart.h>
 #include <micronix/processor_init.h>
 #include <asm/io.h>
@@ -10,6 +9,8 @@
 #include <micronix/panic.h>
 #include <micronix/syscall.h>
 #include <micronix/process.h>
+#include <micronix/printk.h>
+#include <stdint.h>
 
 void change_led(void);
 
@@ -133,7 +134,7 @@ void processor_interrupts_init(){
 void main(void);
 
 int coretimer_int(int cause, int EPC ){
-console_write("CT");
+//console_write("CT");
   change_led();
 main();
 
@@ -154,7 +155,7 @@ static void handle_irq(void){
     uint32_t ifs;
     uint32_t bit_pos;
 
-    /*console_write("GOT INTERRUPT\r\n");*/
+    pr_debug( "Got interrupt\r\n");
 
     ifs = readl(IFS0);
     for( bit_pos = 0; bit_pos < 32; bit_pos++ ){
@@ -193,6 +194,7 @@ static void handle_syscall( struct process_context* context ){
 
     if( syscall_number < 0 || syscall_number > NUM_SYSCALLS ){
         /* bad syscall: force sys_exit */
+        pr_warn( "bad syscall number %d: forcing exit\n", syscall_number );
     }
 
     syscall = syscalls[ syscall_number ];
@@ -210,6 +212,10 @@ struct process_context* exception( const struct process_context* context ){
     struct process_context* current_context;
 
     cause = mips_read_c0_register( CP0_CAUSE, 0 );
+
+    pr_debug( "Exception: cause = 0x%08X, excode = 0x%X\r\n",
+        cause,
+        (cause & CP0_CAUSE_MASK) >> 2 );
 
     /*
      * First update the context for our current process, so that we can
@@ -232,9 +238,6 @@ struct process_context* exception( const struct process_context* context ){
         handle_syscall( current_context );
         break;
     default:
-        console_write( "exception: 0x" );
-        console_printhex( (cause & CP0_CAUSE_MASK) >> 2 );
-        console_write( "\r\n" );
         panic( "No handling for this exception\n" );
     }
 

@@ -1,9 +1,10 @@
-#include <micronix/compiler_types.h>
+#include <stdint.h>
 #include <mach-context.h>
 #include <generated/autoconf.h>
 #include <micronix/errno.h>
 #include <micronix/string.h>
 #include <micronix/klist.h>
+#include <stddef.h>
 
 #ifdef CONFIG_STATIC_PROCESS_LIST
 static struct process_context all_context[ CONFIG_MAX_STATIC_PROCESSES ];

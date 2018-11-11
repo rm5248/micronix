@@ -1,7 +1,7 @@
 #ifndef MICRONIX_STRING_H
 #define MICRONIX_STRING_H
 
-#include <micronix/compiler_types.h>
+#include <stdint.h>
 
 /**
  * Get the length of a string
@@ -14,19 +14,8 @@ int kstrlen(const char* string);
 void* kmemset(void* ptr, int value, uint32_t num);
 
 /**
- * Print the following message to the console
- */
-void _printk(const char* format, ... );
-
-/**
  * Copy a block of memory
  */
 void* kmemcpy(void* dest, const void* src, uint32_t len);
-
-#ifndef CONFIG_DISABLE_PRINTK
-#define printk(format,...)
-#else
-#define printk(format,...) _printk(format, __VA_ARGS__)
-#endif
 
 #endif

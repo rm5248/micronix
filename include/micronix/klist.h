@@ -1,7 +1,7 @@
 #ifndef MICRONIX_KLIST_H
 #define MICRONIX_KLIST_H
 
-#include <micronix/compiler_types.h>
+#include <stdint.h>
 
 #define klist_empty(KList) (KList.length == 0)
 

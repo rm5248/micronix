@@ -10,9 +10,12 @@
 #include <micronix/board.h>
 #include <micronix/schedule.h>
 #include <mach-context.h>
+#include <micronix/printk.h>
 
 void main(void);
 void led_init(void);
+
+void modules_init(void);
 
 struct process_context* kern_init(void){
     processor_clocks_init();
@@ -20,7 +23,7 @@ struct process_context* kern_init(void){
 
     board_earlyconsole_init();
 
-    console_write( "Micronix 0.0.1\r\n" );
+    printk( "Micronix 0.0.1\r\n" );
 
     /* Other kernel initialization */
     klist_init();
@@ -29,6 +32,7 @@ struct process_context* kern_init(void){
     stack_init();
     interrupts_init();
     processor_interrupts_init();
+    modules_init();
 
     /* Now that our internal data structures 
      * have been setup, call the general board 

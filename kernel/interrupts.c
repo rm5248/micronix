@@ -1,7 +1,8 @@
 #include <micronix/interrupts.h>
 #include <generated/autoconf.h>
 #include <micronix/panic.h>
-#include <micronix/compiler_types.h>
+#include <stdint.h>
+#include <stddef.h>
 #include <micronix/uart.h>
 
 struct irq_handling{

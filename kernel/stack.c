@@ -3,6 +3,7 @@
 #include <micronix/panic.h>
 #include <micronix/errno.h>
 #include <micronix/string.h>
+#include <stddef.h>
 
 static stack_t stacks[ CONFIG_MAX_STATIC_PROCESSES ];
 static struct KList available_stacks;

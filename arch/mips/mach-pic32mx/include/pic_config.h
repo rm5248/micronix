@@ -1,7 +1,7 @@
 #ifndef PIC_CONFIG_H
 #define PIC_CONFIG_H
 
-#include <micronix/compiler_types.h>
+#include <stdint.h>
 
 /*--------------------------------------
  * Configuration registers.

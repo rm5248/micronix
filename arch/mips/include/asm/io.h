@@ -1,8 +1,6 @@
 #ifndef MIPS_IO_H
 #define MIPS_IO_H
 
-#include <micronix/compiler_types.h>
-
 #define readl(addr)              *((volatile unsigned*)(addr))
 #define writel(value,addr)    *(volatile unsigned*)(addr) = value
 

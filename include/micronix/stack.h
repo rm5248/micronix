@@ -2,7 +2,7 @@
 #define MICRONIX_STACK_H
 
 #include <generated/autoconf.h>
-#include <micronix/compiler_types.h>
+#include <stdint.h>
 
 typedef uint32_t      stack_t[CONFIG_STACK_SIZE];
 

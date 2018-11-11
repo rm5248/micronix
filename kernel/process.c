@@ -9,6 +9,7 @@
 #include <micronix/schedule.h>
 #include <micronix/uart.h>
 #include <micronix/process-context.h>
+#include <stddef.h>
 
 #include <coprocessor-regs.h>
 

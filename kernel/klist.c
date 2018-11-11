@@ -3,6 +3,7 @@
 #include <generated/autoconf.h>
 #include <micronix/errno.h>
 #include <micronix/uart.h>
+#include <stddef.h>
 
 #ifdef CONFIG_STATIC_KLIST
 static struct KListNode nodes[ CONFIG_KLIST_NODES ];
