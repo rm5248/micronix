@@ -1,8 +1,12 @@
-Micronix Kernel
+# Micronix Kernel
 
-License: GPL v2 Only
+License: 
+GPL v2
+Possible commercial in the future!
 
-This project uses some headers from the Linux kernel.
+## About
+This project uses some headers from the Linux kernel, but only
+to allow the build system to work.
 It also has some roots in the RetroBSD project(linker script)
 
 It also contains ideas learned in 4003-506 class of 20103
