@@ -84,15 +84,6 @@ void processor_interrupts_init(){
     int vector_size = 32;
     extern void _exception_base_(void);
 
-//memory_init();
-//retrobsd_init();
-
-//enable_coretimer();
-
-    asm volatile("di");
-    asm volatile("ehb");
-    mips_write_c0_register(CP0_COUNT, 0, 0);
-
     /* Exception vectors are in bootstrap location */
     //cp0_tmp = mips_read_c0_register(CP0_STATUS, 0);
     cp0_tmp = CP0_STATUS_BEV;
@@ -155,8 +146,6 @@ static void handle_irq(void){
     uint32_t ifs;
     uint32_t bit_pos;
 
-    pr_debug( "Got interrupt\r\n");
-
     ifs = readl(IFS0);
     for( bit_pos = 0; bit_pos < 32; bit_pos++ ){
         if( ifs & (0x01 << bit_pos) ){
@@ -185,6 +174,7 @@ static void handle_irq(void){
     }
 
 kernel_handle:
+    pr_debug( "Got interrupt, irq %d\r\n", irq_number);
     interrupt_handle(irq_number);
 }
 
@@ -197,9 +187,12 @@ static void handle_syscall( struct process_context* context ){
         pr_warn( "bad syscall number %d: forcing exit\n", syscall_number );
     }
 
+    pr_debug( "handling syscall %d\r\n", syscall_number );
     syscall = syscalls[ syscall_number ];
 
     syscall( context );
+
+    process_context_increment_pc_after_syscall(context);
 }
 
 /*
@@ -240,7 +233,6 @@ struct process_context* exception( const struct process_context* context ){
     default:
         panic( "No handling for this exception\n" );
     }
-
 
     /*
      * The current process may have been changed,

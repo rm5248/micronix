@@ -6,6 +6,7 @@
 #include <mach-context.h>
 #include <micronix/uart.h>
 #include <micronix/errno.h>
+#include <micronix/printk.h>
 #include <stddef.h>
 
 static struct KList ready_processes;
@@ -24,6 +25,8 @@ int scheduler_schedule( struct pcb* process ){
     }
 
     key.i = process->pid;
+
+    pr_debug("Scheduling process with PID %d\r\n", process->pid);
 
     return klist_append( &ready_processes, key, process );
 }
@@ -48,6 +51,8 @@ int scheduler_dispatch(){
     scheduler_schedule( currently_executing );
 
     ret = klist_pop_front( &ready_processes, (void**)&currently_executing );
+
+    pr_debug("about to execute process with PID %d\r\n", currently_executing->pid);
 
     return ret;
 }

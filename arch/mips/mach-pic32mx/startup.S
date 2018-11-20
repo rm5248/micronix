@@ -19,22 +19,23 @@ panic_restore_context: .asciiz "Can't restore context"
 	.ent _reset
 	.globl _reset
 _reset:
-	la $sp,u_end - 16 # start of RAM(note:u_end configured via linker script)
-	la $a0,kern_init       # Get the adress of the kern_init method
-	jalr $a0
-	lui $gp,0x8000 # ????
+	la     $sp,u_end - 16 # start of RAM(note:u_end configured via linker script)
+    move   $fp, $sp
+	la     $a0,kern_init       # Get the adress of the kern_init method
+	jalr   $a0
+	lui    $gp,0x8000 # ????
 
     # All data structures have now been initialized,
     # and the kernel should be ready to go.
     # Pretend that we are returning from an interrupt.
     # v0 should already have the ptr to restore context from.
-    j restore_context
+    j      restore_context
     nop
 
     # If we get here something has gone horribly wrong
-    la $v0, panic                  # Get the address of the panic function
-    la $a0, panic_restore_context  # String to call panic with
-    j panic                        # PANIC
+    la     $v0, panic                  # Get the address of the panic function
+    la     $a0, panic_restore_context  # String to call panic with
+    j      panic                       # PANIC
 
 
 

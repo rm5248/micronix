@@ -4,6 +4,8 @@
 #include <micronix/errno.h>
 #include <micronix/string.h>
 #include <micronix/klist.h>
+#include <micronix/process.h>
+#include <micronix/printk.h>
 #include <stddef.h>
 
 #ifdef CONFIG_STATIC_PROCESS_LIST
@@ -61,9 +63,27 @@ out:
     return retval;
 }
 
-int process_context_set_stack(struct process_context* context, stack_t* stack ){
-    context->sp = (int)stack;
-    context->fp = (int)stack;
+int process_context_set_stack(struct process_context* context, stack_t* stack){
+    /* Stack grows downwards, so need to get the END of the stack */
+    context->sp = (int)stack + sizeof(stack_t);
+    context->fp = (int)stack + sizeof(stack_t);
+
+    return 0;
+}
+
+int process_context_fix_stack(const struct pcb* original, struct pcb* newproc){
+    int32_t stackdiff;
+
+    stackdiff = (void*)original->stack - (void*)newproc->stack;
+
+    newproc->context->sp += stackdiff;
+    newproc->context->fp += stackdiff;
+
+    return 0;
+}
+
+int process_context_increment_pc_after_syscall(struct process_context* context){
+    context->pc += 4;
 
     return 0;
 }

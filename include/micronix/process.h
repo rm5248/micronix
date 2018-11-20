@@ -27,6 +27,8 @@ struct process_context;
 typedef uint32_t pid_t;
 typedef uint32_t time_t;
 
+extern pid_t next_pid;
+
 struct pcb {
     struct process_context *context;       // ptr to process context
     stack_t                *stack;         // ptr to full stack

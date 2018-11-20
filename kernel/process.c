@@ -9,6 +9,7 @@
 #include <micronix/schedule.h>
 #include <micronix/uart.h>
 #include <micronix/process-context.h>
+#include <micronix/printk.h>
 #include <stddef.h>
 
 #include <coprocessor-regs.h>
@@ -68,6 +69,7 @@ int pcb_free(struct pcb* tofree){
 int pcb_alloc(struct pcb** pcb){
     int ret;
 
+printk( "pcb_alloc\r\n" );
     if( klist_empty( pcb_avail ) ){
         return -ENOMEM;
     }
@@ -99,9 +101,10 @@ int process_create_first(int (*main_function)(void) ){
     pcb->sleeptime = 0;
     pcb->state = PROCESS_STATE_READY;
 
-    process_context_allocate( &(pcb->context) );
     process_context_set_pc( pcb->context, (int)main_function );
     process_context_set_stack( pcb->context, pcb->stack );
+
+printk("first process stack is 0x%08X\r\n", pcb->stack);
 
     retval = scheduler_schedule( pcb );
     if( retval ){

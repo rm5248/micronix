@@ -114,5 +114,15 @@ int klist_pop_front(struct KList* list, void** data ){
         list->head->prev = NULL;
     }
 
+    if( free_nodes ){
+        head->next = free_nodes;
+        head->prev = NULL;
+        free_nodes = head;
+    }else{
+        free_nodes = head;
+        free_nodes->prev = NULL;
+        free_nodes->next = NULL;
+    }
+
     return 0;
 }

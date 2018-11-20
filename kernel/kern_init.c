@@ -18,8 +18,7 @@ void led_init(void);
 void modules_init(void);
 
 struct process_context* kern_init(void){
-    processor_clocks_init();
-    processor_ram_init();
+    processor_init();
 
     board_earlyconsole_init();
 

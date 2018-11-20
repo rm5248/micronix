@@ -2,6 +2,7 @@
 #include <micronix/module.h>
 #include <micronix/pic32-serial.h>
 #include <micronix/uart.h>
+#include <micronix/console.h>
 
 #define MODE_REGISTER 0x0
 #define STA_REGISTER  0x10

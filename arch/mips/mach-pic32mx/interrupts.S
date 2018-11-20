@@ -183,5 +183,7 @@ restore_context:
   lw      $k1, (30*4) ($k0)
   mtlo    $k1
 
+  ei # TODO why exactly do we need this here? shouldn't be required, 
+     # perhaps we need to enable interrupts earlier on boot?
   # Finally, return from our exception
   eret

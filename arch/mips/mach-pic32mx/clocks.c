@@ -2,12 +2,9 @@
 #include <pic_config.h>
 #include <pic32-clocks.h>
 #include <asm/io.h>
+#include <coprocessor-regs.h>
 
-void processor_clocks_init(){
-  /* No need to configure anything, set by configuration bits */
-}
-
-void processor_ram_init(){
+static void pic32_ram_init(void){
     /* Copy the .data image from flash to ram.
      * Linker places it at the end of .text segment. */
     extern void _etext(void);
@@ -20,6 +17,17 @@ void processor_ram_init(){
         /*printf("copy %08x from (%08x) to (%08x)\n", *src, src, dest);*/
         *dest++ = *src++;
     }
+}
+
+static void pic32_reset_count_register(void){
+    asm volatile("di");
+    asm volatile("ehb");
+    mips_write_c0_register(CP0_COUNT, 0, 0);
+}
+
+void processor_init(){
+    pic32_ram_init();
+    pic32_reset_count_register();
 }
 
 uint32_t pic32_get_sysclk_hz(){

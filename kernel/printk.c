@@ -68,6 +68,9 @@ static void format_integer( char* location, int len, int number, int base, int c
 
     if( negative ) number *= -1;
 
+    if( number == 0 ){
+        location[ x++ ] = characters[ 0 ];
+    }
     /* Put the numbers in the array backwards */
     while( number > 0 ){
         char_idx = number % base;

@@ -3,9 +3,11 @@
 
 #include <micronix/init.h>
 
-#define MODULE_INIT(fn) static initcall_t __initcall_##fn \
-       __attribute__((__section__(".module.init"))) = fn;
+#define MODULE_INFO __attribute__((section(".module.info")))
 
-#define INITCALL __section(".module.init")
+struct module_info{
+    void (*init)(void);
+    const char* module_name;
+};
 
 #endif

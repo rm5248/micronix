@@ -71,6 +71,11 @@ _Static_assert( sizeof( struct process_context ) / 4 == PROCESS_CONTEXT_WORDS, "
  */
 #define PROCESS_CONTEXT_SYSCALL_NUMBER(context) context->v0
 
+/*
+ * Get the program counter from the context
+ */
+#define PROCESS_CONTEXT_PC(context) context->pc
+
 #endif /* __ASSEMBLER__ */
 
 #endif

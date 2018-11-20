@@ -4,9 +4,12 @@
 #include <pic32-coretimer.h>
 #include <pic32-regs.h>
 #include <micronix/uart.h>
+#include <micronix/console.h>
+#include <micronix/printk.h>
 #include <micronix/board.h>
 #include <micronix/process.h>
 #include <micronix/syscall.h>
+#include <pic32-coretimer.h>
 
 PIC32_DEVCFG (
 DEVCFG0_DEBUG_DISABLED,     /* ICE debugger enabled */
@@ -42,6 +45,7 @@ static struct console max32_console = {
 
 static int process_change_a3(void){
     int on = 0;
+    int counter = 0;
 
     TRISA = ~(0x01 << 3);
     PORTA = 0;
@@ -53,6 +57,10 @@ static int process_change_a3(void){
             LATA = ~(0x01 << 3);
         }
 
+            counter++;
+            if( counter % 100000 == 0 ){
+                on = !on;
+            }
         //sys_usleep( 1000 * 250 );
     }
 
@@ -61,16 +69,24 @@ static int process_change_a3(void){
 
 static int process_change_c1(void){
     int on = 0;
+    int counter = 0;
 
-    TRISC = ~(0x01 << 0);
+    TRISC = 0x01;
     PORTC = 0;
+//    PORTCCLR = 0x01;
 
     while( 1 ){
         if( on ){
-            LATC = (0x01 << 1);
+            LATC = 1;
         }else{
-            LATC = ~(0x01 << 1);
+            LATC = ~1;
         }
+
+        counter++;
+        if( counter % 100000 == 0 ){
+            on = !on;
+        }
+
     }
 
     return 0;
@@ -79,18 +95,22 @@ static int process_change_c1(void){
 /* CHIPKIT has RC1 and RA3 as LEDs */
 static int max32_init_process(void){
     /* This is a (very simple) vesion of /sbin/init */
+    int forkval;
 
-console_write("max32_init_process\r\n");
-test();
-/*
-    switch( sys_fork() ){
+    forkval = fork();
+    switch( forkval ){
+    case 0: 
+        printk( "child process, pid %d\r\n", getpid() );
+        process_change_c1();
+        break;
+    case -1:
+        printk( "fork failed\r\n" );
+        break;
+    default:
+        printk( "parent process\r\n" );
     }
-*/
 
-process_change_a3();
-
-    while( 1 ){
-    }
+    process_change_a3();
 
     return 0;
 }
@@ -101,7 +121,12 @@ void board_earlyconsole_init(){
 }
 
 void board_init(){
-    pic32_coretimer_init();
+    struct pic32_coretimer timer_data = {
+        .interrupt_ticks = 2000000,
+    };
+
+    pic32_coretimer_init(&timer_data);
 
     process_create_first( max32_init_process );
 }
+

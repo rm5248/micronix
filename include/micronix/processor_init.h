@@ -7,14 +7,11 @@
  */
 
 /*
- * Called early in the boot process to initialize any clocks
+ * Called early in the boot process.  Should do any 
+ * processor-specific initialization(such as setting up
+ * clocks, copying data into RAM, etc)
  */
-void processor_clocks_init(void);
-
-/*
- * Initializes RAM once clocks have been setup
- */
-void processor_ram_init(void);
+void processor_init(void);
 
 /*
  * Initialize the interrupt controller on the processor,

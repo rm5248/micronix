@@ -1,0 +1,6 @@
+config PIC32_CORETIMER
+    depends on ARCH_PIC32MX
+    bool "Coretimer driver"
+    help
+      This enables the coretimer driver for the PIC32.
+      Needed if you want preemptive multitasking
