@@ -1,2 +1,2 @@
-hex: vmlinux
-	$(OBJCOPY) -O ihex --change-addresses=0x80000000 vmlinux vmlinux.hex;
+hex: micronix
+	$(OBJCOPY) -O ihex --change-addresses=0x80000000 micronix micronix.hex;

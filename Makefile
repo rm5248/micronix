@@ -36,7 +36,7 @@ unexport GREP_OPTIONS
 # their own directory. If in some directory we have a dependency on
 # a file in another dir (which doesn't happen often, but it's often
 # unavoidable when linking the built-in.a targets which finally
-# turn into vmlinux), we will call a sub make in that other dir, and
+# turn into micronix), we will call a sub make in that other dir, and
 # after that we are sure that everything which is in that other dir
 # is now up to date.
 #
@@ -397,7 +397,7 @@ AFLAGS_MODULE   =
 LDFLAGS_MODULE  =
 CFLAGS_KERNEL	=
 AFLAGS_KERNEL	=
-LDFLAGS_vmlinux =
+LDFLAGS_micronix =
 
 # Use USERINCLUDE when you must reference the UAPI directories only.
 USERINCLUDE    := \
@@ -541,7 +541,7 @@ config: scripts_basic outputmakefile FORCE
 
 else
 # ===========================================================================
-# Build targets only - this includes vmlinux, arch specific targets, clean
+# Build targets only - this includes micronix, arch specific targets, clean
 # targets and others. In general all targets except *config targets.
 
 # If building an external module we do not care about the all: rule
@@ -583,7 +583,7 @@ endif
 export KBUILD_MODULES KBUILD_BUILTIN
 
 ifeq ($(KBUILD_EXTMOD),)
-# Objects we will link into vmlinux / subdirs we need to visit
+# Objects we will link into micronix / subdirs we need to visit
 #init-y		:= init/
 drivers-y	:= drivers/
 #net-y		:= net/
@@ -634,8 +634,8 @@ endif # $(dot-config)
 # The all: target is the default when no target is given on the
 # command line.
 # This allow a user to issue only 'make' to build a kernel including modules
-# Defaults to vmlinux, but the arch makefile usually adds further targets
-all: vmlinux
+# Defaults to micronix, but the arch makefile usually adds further targets
+all: micronix
 
 CFLAGS_GCOV	:= -fprofile-arcs -ftest-coverage \
 	$(call cc-option,-fno-tree-loop-im) \
@@ -880,14 +880,14 @@ KBUILD_CFLAGS   += $(ARCH_CFLAGS)   $(KCFLAGS)
 # Use --build-id when available.
 LDFLAGS_BUILD_ID := $(call ld-option, --build-id)
 KBUILD_LDFLAGS_MODULE += $(LDFLAGS_BUILD_ID)
-LDFLAGS_vmlinux += $(LDFLAGS_BUILD_ID)
+LDFLAGS_micronix += $(LDFLAGS_BUILD_ID)
 
 ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-LDFLAGS_vmlinux	+= $(call ld-option, --gc-sections,)
+LDFLAGS_micronix	+= $(call ld-option, --gc-sections,)
 endif
 
 ifeq ($(CONFIG_STRIP_ASM_SYMS),y)
-LDFLAGS_vmlinux	+= $(call ld-option, -X,)
+LDFLAGS_micronix	+= $(call ld-option, -X,)
 endif
 
 # insure the checker run with the right endianness
@@ -901,7 +901,7 @@ CHECKFLAGS += $(if $(CONFIG_64BIT),-m64,-m32)
 # set in the environment
 # Also any assignments in arch/$(ARCH)/Makefile take precedence over
 # this default value
-export KBUILD_IMAGE ?= vmlinux
+export KBUILD_IMAGE ?= micronix
 
 #
 # INSTALL_PATH specifies where to place the updated kernel and system map
@@ -998,11 +998,11 @@ endif
 ifeq ($(KBUILD_EXTMOD),)
 core-y		+= kernel/
 
-vmlinux-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
+micronix-dirs	:= $(patsubst %/,%,$(filter %/, $(init-y) $(init-m) \
 		     $(core-y) $(core-m) $(drivers-y) $(drivers-m) \
 		     $(net-y) $(net-m) $(libs-y) $(libs-m) $(virt-y) $(programs-y)))
 
-vmlinux-alldirs	:= $(sort $(vmlinux-dirs) $(patsubst %/,%,$(filter %/, \
+micronix-alldirs	:= $(sort $(micronix-dirs) $(patsubst %/,%,$(filter %/, \
 		     $(init-) $(core-) $(drivers-) $(net-) $(libs-) $(virt-) $(programs-y))))
 
 init-y		:= $(patsubst %/, %/built-in.a, $(init-y))
@@ -1014,23 +1014,23 @@ libs-y2		:= $(patsubst %/, %/built-in.a, $(filter-out %.a, $(libs-y)))
 virt-y		:= $(patsubst %/, %/built-in.a, $(virt-y))
 programs-y	:= $(patsubst %/, %/built-in.a, $(programs-y))
 
-# Externally visible symbols (used by link-vmlinux.sh)
+# Externally visible symbols (used by link-micronix.sh)
 export KBUILD_VMLINUX_INIT := $(head-y) $(init-y)
 export KBUILD_VMLINUX_MAIN := $(core-y) $(libs-y2) $(drivers-y) $(net-y) $(virt-y) $(programs-y)
 export KBUILD_VMLINUX_LIBS := $(libs-y1)
-export KBUILD_LDS          := arch/$(SRCARCH)/kernel/vmlinux.lds
-export LDFLAGS_vmlinux
+export KBUILD_LDS          := arch/$(SRCARCH)/kernel/micronix.lds
+export LDFLAGS_micronix
 # used by scripts/package/Makefile
-export KBUILD_ALLDIRS := $(sort $(filter-out arch/%,$(vmlinux-alldirs)) arch Documentation include scripts)
+export KBUILD_ALLDIRS := $(sort $(filter-out arch/%,$(micronix-alldirs)) arch Documentation include scripts)
 
-vmlinux-deps := $(KBUILD_LDS) $(KBUILD_VMLINUX_INIT) $(KBUILD_VMLINUX_MAIN) $(KBUILD_VMLINUX_LIBS)
+micronix-deps := $(KBUILD_LDS) $(KBUILD_VMLINUX_INIT) $(KBUILD_VMLINUX_MAIN) $(KBUILD_VMLINUX_LIBS)
 
 # Recurse until adjust_autoksyms.sh is satisfied
 PHONY += autoksyms_recursive
-autoksyms_recursive: $(vmlinux-deps)
+autoksyms_recursive: $(micronix-deps)
 ifdef CONFIG_TRIM_UNUSED_KSYMS
 	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/adjust_autoksyms.sh \
-	  "$(MAKE) -f $(srctree)/Makefile vmlinux"
+	  "$(MAKE) -f $(srctree)/Makefile micronix"
 endif
 
 # For the kernel to actually contain only the needed exported symbols,
@@ -1048,37 +1048,37 @@ $(autoksyms_h):
 
 ARCH_POSTLINK := $(wildcard $(srctree)/arch/$(SRCARCH)/Makefile.postlink)
 
-# Final link of vmlinux with optional arch pass after final link
-cmd_link-vmlinux =                                                 \
-	$(CONFIG_SHELL) $< $(LD) $(LDFLAGS) $(LDFLAGS_vmlinux) ;    \
+# Final link of micronix with optional arch pass after final link
+cmd_link-micronix =                                                 \
+	$(CONFIG_SHELL) $< $(LD) $(LDFLAGS) $(LDFLAGS_micronix) ;    \
 	$(if $(ARCH_POSTLINK), $(MAKE) -f $(ARCH_POSTLINK) $@, true)
 
-vmlinux: scripts/link-vmlinux.sh autoksyms_recursive $(vmlinux-deps) FORCE
+micronix: scripts/link-micronix.sh autoksyms_recursive $(micronix-deps) FORCE
 ifdef CONFIG_HEADERS_CHECK
 	$(Q)$(MAKE) -f $(srctree)/Makefile headers_check
 endif
 ifdef CONFIG_GDB_SCRIPTS
-	$(Q)ln -fsn $(abspath $(srctree)/scripts/gdb/vmlinux-gdb.py)
+	$(Q)ln -fsn $(abspath $(srctree)/scripts/gdb/micronix-gdb.py)
 endif
-	+$(call if_changed,link-vmlinux)
+	+$(call if_changed,link-micronix)
 
 # Build samples along the rest of the kernel
 ifdef CONFIG_SAMPLES
-vmlinux-dirs += samples
+micronix-dirs += samples
 endif
 
 # The actual objects are generated when descending,
 # make sure no implicit rule kicks in
-$(sort $(vmlinux-deps)): $(vmlinux-dirs) ;
+$(sort $(micronix-deps)): $(micronix-dirs) ;
 
-# Handle descending into subdirectories listed in $(vmlinux-dirs)
+# Handle descending into subdirectories listed in $(micronix-dirs)
 # Preset locale variables to speed up the build process. Limit locale
 # tweaks to this spot to avoid wrong language settings when running
 # make menuconfig etc.
 # Error messages still appears in the original language
 
-PHONY += $(vmlinux-dirs)
-$(vmlinux-dirs): prepare scripts
+PHONY += $(micronix-dirs)
+$(micronix-dirs): prepare scripts
 	$(Q)$(MAKE) $(build)=$@ need-builtin=1
 
 define filechk_kernel.release
@@ -1292,12 +1292,12 @@ all:
 # using awk while concatenating to the final file.
 
 PHONY += modules
-modules: $(vmlinux-dirs) $(if $(KBUILD_BUILTIN),vmlinux) modules.builtin
-	$(Q)$(AWK) '!x[$$0]++' $(vmlinux-dirs:%=$(objtree)/%/modules.order) > $(objtree)/modules.order
+modules: $(micronix-dirs) $(if $(KBUILD_BUILTIN),micronix) modules.builtin
+	$(Q)$(AWK) '!x[$$0]++' $(micronix-dirs:%=$(objtree)/%/modules.order) > $(objtree)/modules.order
 	@$(kecho) '  Building modules, stage 2.';
 	#$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modpost
 
-modules.builtin: $(vmlinux-dirs:%=%/modules.builtin)
+modules.builtin: $(micronix-dirs:%=%/modules.builtin)
 	$(Q)$(AWK) '!x[$$0]++' $^ > $(objtree)/modules.builtin
 
 %/modules.builtin: include/config/auto.conf
@@ -1372,23 +1372,23 @@ MRPROPER_FILES += .config .config.old .version \
 		  Module.symvers tags TAGS cscope* GPATH GTAGS GRTAGS GSYMS \
 		  signing_key.pem signing_key.priv signing_key.x509	\
 		  x509.genkey extra_certificates signing_key.x509.keyid	\
-		  signing_key.x509.signer vmlinux-gdb.py
+		  signing_key.x509.signer micronix-gdb.py
 
 # clean - Delete most, but leave enough to build external modules
 #
 clean: rm-dirs  := $(CLEAN_DIRS)
 clean: rm-files := $(CLEAN_FILES)
-clean-dirs      := $(addprefix _clean_, . $(vmlinux-alldirs) Documentation )
+clean-dirs      := $(addprefix _clean_, . $(micronix-alldirs) Documentation )
 
-PHONY += $(clean-dirs) clean archclean vmlinuxclean
+PHONY += $(clean-dirs) clean archclean micronixclean
 $(clean-dirs):
 	$(Q)$(MAKE) $(clean)=$(patsubst _clean_%,%,$@)
 
-vmlinuxclean:
-	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/link-vmlinux.sh clean
+micronixclean:
+	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/link-micronix.sh clean
 	$(Q)$(if $(ARCH_POSTLINK), $(MAKE) -f $(ARCH_POSTLINK) clean)
 
-clean: archclean vmlinuxclean
+clean: archclean micronixclean
 
 # mrproper - Delete all generated files, including .config
 #
@@ -1451,7 +1451,7 @@ help:
 	@echo  ''
 	@echo  'Other generic targets:'
 	@echo  '  all		  - Build all targets marked with [*]'
-	@echo  '* vmlinux	  - Build the bare kernel'
+	@echo  '* micronix	  - Build the bare kernel'
 	@echo  '* modules	  - Build all modules'
 	@echo  '  modules_install - Install all modules to INSTALL_MOD_PATH (default: /)'
 	@echo  '  dir/            - Build all files in dir and below'
@@ -1695,7 +1695,7 @@ else
 CHECKSTACK_ARCH := $(ARCH)
 endif
 checkstack:
-	$(OBJDUMP) -d vmlinux $$(find . -name '*.ko') | \
+	$(OBJDUMP) -d micronix $$(find . -name '*.ko') | \
 	$(PERL) $(src)/scripts/checkstack.pl $(CHECKSTACK_ARCH)
 
 kernelrelease:

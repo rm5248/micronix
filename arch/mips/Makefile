@@ -64,22 +64,22 @@ ifdef CONFIG_32BIT
 #ROBERT configure this based on compiler
 ld-emul			= $(32bit-emul)
 #ld-emul			= elf32pic32mx
-vmlinux-32		= vmlinux
-vmlinux-64		= vmlinux.64
+micronix-32		= micronix
+micronix-64		= micronix.64
 
 cflags-y		+= -mabi=32
 endif
 
 ifdef CONFIG_64BIT
 ld-emul			= $(64bit-emul)
-vmlinux-32		= vmlinux.32
-vmlinux-64		= vmlinux
+micronix-32		= micronix.32
+micronix-64		= micronix
 
 cflags-y		+= -mabi=64
 endif
 
-all-$(CONFIG_BOOT_ELF32)	:= $(vmlinux-32)
-all-$(CONFIG_BOOT_ELF64)	:= $(vmlinux-64)
+all-$(CONFIG_BOOT_ELF32)	:= $(micronix-32)
+all-$(CONFIG_BOOT_ELF64)	:= $(micronix-64)
 all-$(CONFIG_SYS_SUPPORTS_ZBOOT)+= vmlinuz
 
 # Machine directory name.  This list is sorted alphanumerically 
@@ -109,12 +109,12 @@ core-y                          += $(machdirs)
 #
 cflags-y			+= -G 0 -mno-abicalls -fno-pic -pipe
 cflags-y			+= -msoft-float
-LDFLAGS_vmlinux			+= -G 0 -static -n -nostdlib
+LDFLAGS_micronix		+= -G 0 -static -n -nostdlib
 KBUILD_AFLAGS_MODULE		+= -mlong-calls
 KBUILD_CFLAGS_MODULE		+= -mlong-calls
 
 ifeq ($(CONFIG_RELOCATABLE),y)
-LDFLAGS_vmlinux			+= --emit-relocs
+LDFLAGS_micronix		+= --emit-relocs
 endif
 
 #
@@ -269,7 +269,7 @@ load-y					= $(CONFIG_PHYSICAL_START)
 endif
 
 # Sign-extend the entry point to 64 bits if retrieved as a 32-bit number.
-entry-y		= $(shell $(OBJDUMP) -f vmlinux 2>/dev/null \
+entry-y		= $(shell $(OBJDUMP) -f micronix 2>/dev/null \
 			| sed -n '/^start address / { \
 				s/^.* //; \
 				s/0x\([0-7].......\)$$/0x00000000\1/; \
@@ -348,9 +348,9 @@ core-y += arch/mips/
 #drivers-$(CONFIG_PM)	+= arch/mips/power/
 
 # boot image targets (arch/mips/boot/)
-boot-y			:= vmlinux.bin
-boot-y			+= vmlinux.ecoff
-boot-y			+= vmlinux.srec
+boot-y			:= micronix.bin
+boot-y			+= micronix.ecoff
+boot-y			+= micronx.srec
 ifeq ($(shell expr $(load-y) \< 0xffffffff80000000 2> /dev/null), 0)
 boot-y			+= uImage
 boot-y			+= uImage.bin
@@ -359,11 +359,11 @@ boot-y			+= uImage.gz
 boot-y			+= uImage.lzma
 boot-y			+= uImage.lzo
 endif
-boot-y			+= vmlinux.itb
-boot-y			+= vmlinux.gz.itb
-boot-y			+= vmlinux.bz2.itb
-boot-y			+= vmlinux.lzma.itb
-boot-y			+= vmlinux.lzo.itb
+boot-y			+= micronix.itb
+boot-y			+= micronix.gz.itb
+boot-y			+= micronix.bz2.itb
+boot-y			+= micronix.lzma.itb
+boot-y			+= micronix.lzo.itb
 
 # compressed boot image targets (arch/mips/boot/compressed/)
 bootz-y			:= vmlinuz
@@ -375,7 +375,7 @@ bootz-y			+= uzImage.bin
 endif
 
 ifdef CONFIG_LASAT
-rom.bin rom.sw: vmlinux
+rom.bin rom.sw: micronix
 	$(Q)$(MAKE) $(build)=arch/mips/lasat/image \
 		$(bootvars-y) $@
 endif
@@ -387,7 +387,7 @@ endif
 #
 quiet_cmd_32 = OBJCOPY $@
 	cmd_32 = $(OBJCOPY) -O $(32bit-bfd) $(OBJCOPYFLAGS) $< $@
-vmlinux.32: vmlinux
+mironix.32: micronix
 	$(call cmd,32)
 
 #
@@ -396,19 +396,19 @@ vmlinux.32: vmlinux
 #
 quiet_cmd_64 = OBJCOPY $@
 	cmd_64 = $(OBJCOPY) -O $(64bit-bfd) $(OBJCOPYFLAGS) $< $@
-vmlinux.64: vmlinux
+micronix.64: micronix
 	$(call cmd,64)
 
 all:	$(all-y)
 
 # boot
-$(boot-y): $(vmlinux-32) FORCE
-	$(Q)$(MAKE) $(build)=arch/mips/boot VMLINUX=$(vmlinux-32) \
+$(boot-y): $(micronix-32) FORCE
+	$(Q)$(MAKE) $(build)=arch/mips/boot MICRONIX=$(micronix-32) \
 		$(bootvars-y) arch/mips/boot/$@
 
 ifdef CONFIG_SYS_SUPPORTS_ZBOOT
 # boot/compressed
-$(bootz-y): $(vmlinux-32) FORCE
+$(bootz-y): $(micronix-32) FORCE
 	$(Q)$(MAKE) $(build)=arch/mips/boot/compressed \
 		$(bootvars-y) 32bit-bfd=$(32bit-bfd) $@
 else
@@ -418,7 +418,7 @@ vmlinuz: FORCE
 endif
 
 
-CLEAN_FILES += vmlinux.32 vmlinux.64
+CLEAN_FILES += micronix.32 micronix.64
 
 # device-trees
 #core-$(CONFIG_BUILTIN_DTB) += arch/mips/boot/dts/
@@ -445,7 +445,7 @@ ifdef CONFIG_MIPS32_O32
 endif
 
 install:
-	$(Q)install -D -m 755 vmlinux $(INSTALL_PATH)/vmlinux-$(KERNELRELEASE)
+	$(Q)install -D -m 755 micronix $(INSTALL_PATH)/micronix-$(KERNELRELEASE)
 ifdef CONFIG_SYS_SUPPORTS_ZBOOT
 	$(Q)install -D -m 755 vmlinuz $(INSTALL_PATH)/vmlinuz-$(KERNELRELEASE)
 endif
@@ -459,10 +459,10 @@ archclean:
 
 define archhelp
 	echo '  install              - install kernel into $(INSTALL_PATH)'
-	echo '  vmlinux.ecoff        - ECOFF boot image'
-	echo '  vmlinux.bin          - Raw binary boot image'
-	echo '  vmlinux.srec         - SREC boot image'
-	echo '  vmlinux.32           - 64-bit boot image wrapped in 32bits (IP22/IP32)'
+	echo '  micronix.ecoff        - ECOFF boot image'
+	echo '  micronix.bin          - Raw binary boot image'
+	echo '  micronix.srec         - SREC boot image'
+	echo '  micronix.32           - 64-bit boot image wrapped in 32bits (IP22/IP32)'
 	echo '  vmlinuz              - Compressed boot(zboot) image'
 	echo '  vmlinuz.ecoff        - ECOFF zboot image'
 	echo '  vmlinuz.bin          - Raw binary zboot image'

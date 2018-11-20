@@ -1,9 +1,9 @@
 #!/bin/sh
 # SPDX-License-Identifier: GPL-2.0
 #
-# link vmlinux
+# link micronix
 #
-# vmlinux is linked from the objects selected by $(KBUILD_VMLINUX_INIT) and
+# micronix is linked from the objects selected by $(KBUILD_VMLINUX_INIT) and
 # $(KBUILD_VMLINUX_MAIN) and $(KBUILD_VMLINUX_LIBS). Most are built-in.a files
 # from top-level directories in the kernel tree, others are specified in
 # arch/$(ARCH)/Makefile. Ordering when linking is important, and
@@ -11,7 +11,7 @@
 # which are linked conditionally (not within --whole-archive), and do not
 # require symbol indexes added.
 #
-# vmlinux
+# micronix
 #   ^
 #   |
 #   +-< $(KBUILD_VMLINUX_INIT)
@@ -25,10 +25,10 @@
 #   |
 #   +-< ${kallsymso} (see description in KALLSYMS section)
 #
-# vmlinux version (uname -v) cannot be updated during normal
+# micronix version (uname -v) cannot be updated during normal
 # descending-into-subdirs phase since we do not yet know if we need to
-# update vmlinux.
-# Therefore this step is delayed until just before final link of vmlinux.
+# update micronix.
+# Therefore this step is delayed until just before final link of micronix.
 #
 # System.map is generated to document addresses of all kernel symbols
 
@@ -45,7 +45,7 @@ info()
 }
 
 # Thin archive build here makes a final archive with symbol table and indexes
-# from vmlinux objects INIT and MAIN, which can be used as input to linker.
+# from micronix objects INIT and MAIN, which can be used as input to linker.
 # KBUILD_VMLINUX_LIBS archives should already have symbol table and indexes
 # added.
 #
@@ -62,7 +62,7 @@ archive_builtin()
 				${KBUILD_VMLINUX_MAIN}
 }
 
-# Link of vmlinux.o used for section mismatch analysis
+# Link of micronix.o used for section mismatch analysis
 # ${1} output file
 modpost_link()
 {
@@ -78,10 +78,10 @@ modpost_link()
 	${LD} ${LDFLAGS} -r -o ${1} ${objects}
 }
 
-# Link of vmlinux
+# Link of micronix
 # ${1} - optional extra .o files
 # ${2} - output file
-vmlinux_link()
+micronix_link()
 {
 	local lds="${objtree}/${KBUILD_LDS}"
 	local objects
@@ -95,7 +95,7 @@ vmlinux_link()
 			--end-group				\
 			${1}"
 
-		${LD} ${LDFLAGS} ${LDFLAGS_vmlinux} -o ${2}	\
+		${LD} ${LDFLAGS} ${LDFLAGS_micronix} -o ${2}	\
 			-T ${lds} ${objects}
 	else
 		objects="-Wl,--whole-archive			\
@@ -106,7 +106,7 @@ vmlinux_link()
 			-Wl,--end-group				\
 			${1}"
 
-		${CC} ${CFLAGS_vmlinux} -o ${2}			\
+		${CC} ${CFLAGS_micronix} -o ${2}			\
 			-Wl,-T,${lds}				\
 			${objects}				\
 			-lutil -lrt -lpthread
@@ -159,11 +159,11 @@ cleanup()
 {
 	rm -f .tmp_System.map
 	rm -f .tmp_kallsyms*
-	rm -f .tmp_vmlinux*
+	rm -f .tmp_micronix*
 	rm -f built-in.a
 	rm -f System.map
-	rm -f vmlinux
-	rm -f vmlinux.o
+	rm -f micronix
+	rm -f micronix.o
 }
 
 on_exit()
@@ -219,25 +219,25 @@ ${MAKE} -f "${srctree}/scripts/Makefile.build" obj=init
 
 archive_builtin
 
-#link vmlinux.o
-info LD vmlinux.o
-modpost_link vmlinux.o
+#link micronix.o
+info LD micronix.o
+modpost_link micronix.o
 
-# modpost vmlinux.o to check for section mismatches
-#${MAKE} -f "${srctree}/scripts/Makefile.modpost" vmlinux.o
+# modpost micronix.o to check for section mismatches
+#${MAKE} -f "${srctree}/scripts/Makefile.modpost" micronix.o
 
 kallsymso=""
-kallsyms_vmlinux=""
+kallsyms_micronix=""
 if [ -n "${CONFIG_KALLSYMS}" ]; then
 
 	# kallsyms support
-	# Generate section listing all symbols and add it into vmlinux
+	# Generate section listing all symbols and add it into micronix
 	# It's a three step process:
-	# 1)  Link .tmp_vmlinux1 so it has all symbols and sections,
+	# 1)  Link .tmp_micronix1 so it has all symbols and sections,
 	#     but __kallsyms is empty.
 	#     Running kallsyms on that gives us .tmp_kallsyms1.o with
 	#     the right size
-	# 2)  Link .tmp_vmlinux2 so it now has a __kallsyms section of
+	# 2)  Link .tmp_micronix2 so it now has a __kallsyms section of
 	#     the right size, but due to the added section, some
 	#     addresses have shifted.
 	#     From here, we generate a correct .tmp_kallsyms2.o
@@ -248,21 +248,21 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
 	#     in even more stubs, but unlikely.
 	#     KALLSYMS_EXTRA_PASS=1 may also used to debug or work around
 	#     other bugs.
-	# 4)  The correct ${kallsymso} is linked into the final vmlinux.
+	# 4)  The correct ${kallsymso} is linked into the final micronix.
 	#
-	# a)  Verify that the System.map from vmlinux matches the map from
+	# a)  Verify that the System.map from micronix matches the map from
 	#     ${kallsymso}.
 
 	kallsymso=.tmp_kallsyms2.o
-	kallsyms_vmlinux=.tmp_vmlinux2
+	kallsyms_micronix=.tmp_micronix2
 
 	# step 1
-	vmlinux_link "" .tmp_vmlinux1
-	kallsyms .tmp_vmlinux1 .tmp_kallsyms1.o
+	micronix_link "" .tmp_micronix1
+	kallsyms .tmp_micronix1 .tmp_kallsyms1.o
 
 	# step 2
-	vmlinux_link .tmp_kallsyms1.o .tmp_vmlinux2
-	kallsyms .tmp_vmlinux2 .tmp_kallsyms2.o
+	micronix_link .tmp_kallsyms1.o .tmp_micronix2
+	kallsyms .tmp_micronix2 .tmp_kallsyms2.o
 
 	# step 3
 	size1=$(${CONFIG_SHELL} "${srctree}/scripts/file-size.sh" .tmp_kallsyms1.o)
@@ -270,28 +270,28 @@ if [ -n "${CONFIG_KALLSYMS}" ]; then
 
 	if [ $size1 -ne $size2 ] || [ -n "${KALLSYMS_EXTRA_PASS}" ]; then
 		kallsymso=.tmp_kallsyms3.o
-		kallsyms_vmlinux=.tmp_vmlinux3
+		kallsyms_micronix=.tmp_micronix3
 
-		vmlinux_link .tmp_kallsyms2.o .tmp_vmlinux3
+		micronix_link .tmp_kallsyms2.o .tmp_micronix3
 
-		kallsyms .tmp_vmlinux3 .tmp_kallsyms3.o
+		kallsyms .tmp_micronix3 .tmp_kallsyms3.o
 	fi
 fi
 
-info LD vmlinux
-vmlinux_link "${kallsymso}" vmlinux
+info LD micronix
+micronix_link "${kallsymso}" micronix
 
 if [ -n "${CONFIG_BUILDTIME_EXTABLE_SORT}" ]; then
-	info SORTEX vmlinux
-	sortextable vmlinux
+	info SORTEX micronix
+	sortextable micronix
 fi
 
 info SYSMAP System.map
-mksysmap vmlinux System.map
+mksysmap micronix System.map
 
 # step a (see comment above)
 if [ -n "${CONFIG_KALLSYMS}" ]; then
-	mksysmap ${kallsyms_vmlinux} .tmp_System.map
+	mksysmap ${kallsyms_micronix} .tmp_System.map
 
 	if ! cmp -s System.map .tmp_System.map; then
 		echo >&2 Inconsistent kallsyms data
