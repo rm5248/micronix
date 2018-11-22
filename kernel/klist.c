@@ -3,6 +3,7 @@
 #include <generated/autoconf.h>
 #include <micronix/errno.h>
 #include <micronix/uart.h>
+#include <micronix/printk.h>
 #include <stddef.h>
 
 #ifdef CONFIG_STATIC_KLIST
@@ -37,6 +38,20 @@ static int klist_new_node( struct KListNode** newnode ){
 
     *newnode = free_nodes;
     free_nodes = free_nodes->next;
+
+#ifdef DEBUG
+    {
+        int currently_used = 0;
+        struct KListNode* node = free_nodes;
+        while( node != NULL ){
+            currently_used++;
+            node = node->next;
+        }
+        pr_debug( "allocating new node, %d/%d nodes used\r\n",
+            currently_used,
+            CONFIG_KLIST_NODES );
+    }
+#endif
 
     return 0;
 }
