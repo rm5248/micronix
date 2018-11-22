@@ -32,3 +32,9 @@ config STACK_SIZE
     depends on STATIC_PROCESS_LIST
     help
       The size of a stack for a process.
+
+config ENABLE_PRINTK
+    bool "Enable printk debugging"
+    default y
+    help
+      Enable the printk call

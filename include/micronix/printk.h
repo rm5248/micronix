@@ -1,10 +1,16 @@
 #ifndef MICRONIX_PRINTK_H
 #define MICRONIX_PRINTK_H
 
-int printk(const char* message, ...);
+#include <generated/autoconf.h>
 
 #define no_printk(msg,...) \
 { if(0) printk(msg, ##__VA_ARGS__); }
+
+#ifdef CONFIG_ENABLE_PRINTK
+int printk(const char* message, ...);
+#else
+#define printk(msg,...)
+#endif
 
 
 #ifndef pr_fmt

@@ -1,5 +1,7 @@
-obj-y += main.o kern_init.o printk.o string.o console.o klist.o panic.o process.o stack.o
+obj-y += main.o kern_init.o string.o console.o klist.o panic.o process.o stack.o
 obj-y += interrupts.o syscalls.o schedule.o
 obj-y += modules.o
 
 obj-y += syscalls/
+
+obj-$(CONFIG_ENABLE_PRINTK) += printk.o
