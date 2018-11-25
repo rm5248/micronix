@@ -1,0 +1,8 @@
+config ENABLE_I2C
+	bool "Enable I2C subsystem"
+	help
+	  Enable I2C subsystem
+
+if ENABLE_I2C
+
+endif

@@ -1,1 +1,8 @@
+config ENABLE_TTY
+	bool "Enable TTY drivers"
+	help
+	  Enable TTY/serial subsystem
+
+if ENABLE_TTY
 source "drivers/tty/serial/Kconfig"
+endif

@@ -10,6 +10,8 @@
 #include <micronix/process.h>
 #include <micronix/syscall.h>
 #include <pic32-coretimer.h>
+#include <micronix/chardev.h>
+#include <micronix/fsbuiltin.h>
 
 PIC32_DEVCFG (
 DEVCFG0_DEBUG_DISABLED,     /* ICE debugger enabled */
@@ -41,6 +43,18 @@ static struct console max32_console = {
     .name = "console",
     .write = pic32_console_write,
     .data = &uart1
+};
+
+struct pic32_uart_data uart1_data = PIC32_UART_DATA(UART1_BASE_ADDRESS);
+
+struct chardev character_devices[] = {
+    PIC32_UART_DEVICE(&uart1_data,0),
+    CHARDEV_END
+};
+
+struct fs_entry filesystem[] = {
+    FS_ENTRY_DEV( "/dev/ttyS0", FS_ENTRY_CHARDEV, MAJOR_TTY, 0 ),
+    FS_ENTRY_END
 };
 
 static int process_change_a3(void){
@@ -96,6 +110,7 @@ static int process_change_c1(void){
 static int max32_init_process(void){
     /* This is a (very simple) vesion of /sbin/init */
     int forkval;
+    int fd;
 
     forkval = fork();
     switch( forkval ){
@@ -109,6 +124,11 @@ static int max32_init_process(void){
     default:
         printk( "parent process\r\n" );
     }
+
+    fd = open( "/dev/ttyS0", 0 );
+    printk( "fd is %d\r\n", fd );
+    write( fd, "foobar", 6 );
+    printk("|foobar done\r\n");
 
     process_change_a3();
 
