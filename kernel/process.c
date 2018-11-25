@@ -69,7 +69,6 @@ int pcb_free(struct pcb* tofree){
 int pcb_alloc(struct pcb** pcb){
     int ret;
 
-printk( "pcb_alloc\r\n" );
     if( klist_empty( pcb_avail ) ){
         return -ENOMEM;
     }

@@ -52,12 +52,11 @@ _Static_assert( sizeof( struct process_context ) / 4 == PROCESS_CONTEXT_WORDS, "
 /*
  * Get the argument number from the context.
  */
-#define PROCESS_CONTEXT_ARG(number,context) ({\
+#define PROCESS_CONTEXT_ARG(context,number) ({\
     int value; \
-    if( number == 0 ) value = context->a0;\
-    if( number == 1 ) value = context->a1;\
-    if( number == 2 ) value = context->a2;\
-    if( number == 3 ) value = context->a3;\
+    if( number == 0 ) value = context->a1;\
+    if( number == 1 ) value = context->a2;\
+    if( number == 2 ) value = context->a3;\
     value;\
 })
 

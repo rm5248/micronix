@@ -1,7 +1,9 @@
 #ifndef MICRONIX_PROCESS_H
 #define MICRONIX_PROCESS_H
 
+#include <generated/autoconf.h>
 #include <micronix/stack.h>
+#include <micronix/fsbuiltin.h>
 #include <stdint.h>
 
 #define INIT_PID 1
@@ -37,6 +39,8 @@ struct pcb {
     int32_t                status;         // termination status of this process
     time_t                 sleeptime;      // when the process started sleeping
     enum ProcessState      state;          // current process state
+    /* The file descriptors this process has open */
+    struct fs_entry*  fds[ CONFIG_MAX_PROCESS_FDS ]; 
 };
 
 /**

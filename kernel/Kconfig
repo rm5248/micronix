@@ -38,3 +38,10 @@ config ENABLE_PRINTK
     default y
     help
       Enable the printk call
+
+config MAX_PROCESS_FDS
+    int "Max file descriptor per process"
+    default 4
+    help
+      Configures how many file descriptors can be open on a 
+      per-process basis

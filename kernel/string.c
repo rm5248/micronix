@@ -32,3 +32,31 @@ void* kmemcpy(void* dest, const void* src, uint32_t len){
 
     return dest;
 }
+
+int kmemcmp(const void* loc1, const void* loc2, uint32_t len){
+    int8_t* loc1_u8 = (int8_t*)loc1;
+    int8_t* loc2_u8 = (int8_t*)loc2;
+    int8_t diff;
+
+    while( len-- ){
+        diff = loc1_u8 - loc2_u8;
+        if( diff ) break;
+        loc1_u8++;
+        loc2_u8++;
+    }
+
+    return diff;
+}
+
+int kstrcmp(const char* str1, const char* str2){
+    char diff = 0;
+
+    while( *str1 != '\0' || *str2 != '\0' ){
+        diff = *str1 - *str2;
+        if( diff ) break;
+        str1++;
+        str2++;
+    }
+
+    return diff;
+}
