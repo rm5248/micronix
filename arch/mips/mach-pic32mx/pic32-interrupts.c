@@ -231,6 +231,7 @@ struct process_context* exception( const struct process_context* context ){
         handle_syscall( current_context );
         break;
     default:
+        pr_emerg( "exception code: 0x%X\r\n", (cause & CP0_CAUSE_MASK) >> 2 );
         panic( "No handling for this exception\n" );
     }
 
